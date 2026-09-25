@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="line" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#8791ff" stop-opacity="0"/>
+      <stop offset=".38" stop-color="#8791ff" stop-opacity=".22"/>
+      <stop offset=".72" stop-color="#8791ff" stop-opacity=".56"/>
+      <stop offset="1" stop-color="#987dff" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0" cy="0" r="1" gradientTransform="translate(930 245) rotate(90) scale(330 480)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#5c64dc" stop-opacity=".18"/>
+      <stop offset="1" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="blur" x="-30%" y="-80%" width="160%" height="260%">
+      <feGaussianBlur stdDeviation="12"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="630" fill="#000"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+
+  <g fill="none" stroke="url(#line)" stroke-linecap="round">
+    <path d="M520 475C665 337 710 501 858 345s212-211 398-79" stroke-width="34" opacity=".22" filter="url(#blur)"/>
+    <path d="M490 460C635 322 699 481 842 330s225-201 414-74" stroke-width="2"/>
+    <path d="M496 415C644 279 712 438 852 290s221-185 405-66" opacity=".8"/>
+    <path d="M515 505C666 369 726 528 873 374s214-197 390-74" opacity=".62"/>
+    <path d="M548 365C693 239 746 391 888 252s211-162 374-52" opacity=".42"/>
+    <path d="M584 320C718 210 778 348 914 221s200-142 350-44" opacity=".28"/>
+  </g>
+
+  <g transform="translate(76 72)">
+    <rect width="72" height="72" rx="16" fill="#09090b" stroke="#242429"/>
+    <g transform="translate(13 10) scale(.78)">
+      <path fill="#f5f5f5" d="M53 6C40 8 27 17 20 29c-5 8-6 16-2 21l-6 8 5 2 6-8c5 0 11-3 16-8C49 35 54 21 53 6Z"/>
+      <path d="M18 55 45 17" fill="none" stroke="#09090b" stroke-linecap="round" stroke-width="3.4"/>
+      <path d="m25 43 14-3M29 36l14-4M34 29l12-4M22 47l-2-10M27 39l-2-10M33 31l-1-8" fill="none" stroke="#09090b" stroke-linecap="round" stroke-width="2.2"/>
+    </g>
+  </g>
+
+  <text x="76" y="242" fill="#8791ff" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" font-weight="600" letter-spacing="3">PORTFOLIO</text>
+  <text x="76" y="343" fill="#f5f5f5" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="76" font-weight="600" letter-spacing="-4">Pulkit Sharma</text>
+  <text x="80" y="405" fill="#b4b4bd" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="30" font-weight="500">Full Stack Developer</text>
+  <circle cx="82" cy="456" r="4" fill="#8791ff"/>
+  <text x="100" y="464" fill="#71717a" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="20" font-weight="500" letter-spacing=".5">AI/ML Enthusiast</text>
+
+  <rect x="32" y="32" width="1136" height="566" rx="20" fill="none" stroke="#fff" stroke-opacity=".08"/>
+</svg>
