@@ -16,7 +16,7 @@ export function Projects() {
       >
         <div>
           <p className="section-kicker">Build / 02</p>
-          <h2 id="projects-title">Selected Projects</h2>
+          <h2 id="projects-title">Projects</h2>
         </div>
         <p>A selection of full-stack, AI-assisted, and backend systems work.</p>
       </motion.div>

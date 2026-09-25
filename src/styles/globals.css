@@ -430,7 +430,8 @@ main {
 }
 
 .connect-section,
-.projects-section {
+.projects-section,
+.stack-section {
   scroll-margin-top: calc(var(--header-height) + 1.25rem);
 }
 
@@ -510,7 +511,7 @@ main {
 }
 
 .projects-section {
-  padding-bottom: clamp(5rem, 9vw, 8rem);
+  padding-bottom: clamp(4.5rem, 8vw, 7rem);
 }
 
 .projects-grid {
@@ -1149,13 +1150,85 @@ main {
   letter-spacing: 0.015em;
 }
 
-.phase-placeholder {
-  min-height: 10rem;
-  scroll-margin-top: calc(var(--header-height) + 1.25rem);
+.stack-section {
+  padding-bottom: clamp(5rem, 9vw, 8rem);
 }
 
-.phase-placeholder:last-child {
-  min-height: 14rem;
+.stack-groups,
+.technology-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stack-groups {
+  border-top: 1px solid var(--color-line);
+}
+
+.stack-group {
+  display: grid;
+  grid-template-columns: minmax(11rem, 0.28fr) minmax(0, 1fr);
+  gap: clamp(1.5rem, 4vw, 4rem);
+  align-items: start;
+  padding: clamp(1.25rem, 2.5vw, 1.75rem) 0;
+  border-bottom: 1px solid var(--color-line);
+}
+
+.stack-group h3 {
+  margin: 0;
+  padding-top: 0.7rem;
+  color: var(--color-muted);
+  font-size: 0.76rem;
+  font-weight: 620;
+  letter-spacing: 0.075em;
+  line-height: 1.45;
+  text-transform: uppercase;
+}
+
+.technology-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.technology-chip {
+  --technology-color: var(--color-accent);
+  display: inline-flex;
+  min-height: 2.65rem;
+  align-items: center;
+  gap: 0.62rem;
+  padding: 0.52rem 0.75rem 0.52rem 0.58rem;
+  border: 1px solid rgb(255 255 255 / 9%);
+  border-radius: 0.62rem;
+  color: #dedee3;
+  background: rgb(9 9 11 / 82%);
+  font-size: 0.78rem;
+  font-weight: 540;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.technology-icon-shell {
+  display: inline-flex;
+  width: 1.55rem;
+  height: 1.55rem;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid color-mix(in srgb, var(--technology-color) 24%, transparent);
+  border-radius: 0.38rem;
+  color: var(--technology-color);
+  background: color-mix(in srgb, var(--technology-color) 8%, transparent);
+}
+
+.technology-icon {
+  width: 0.85rem;
+  height: 0.85rem;
+}
+
+.phase-placeholder {
+  min-height: 12rem;
+  scroll-margin-top: calc(var(--header-height) + 1.25rem);
 }
 
 @media (max-width: 899px) {
@@ -1255,6 +1328,15 @@ main {
 
   .projects-section {
     padding-bottom: 4.5rem;
+  }
+
+  .stack-group {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.9rem;
+  }
+
+  .stack-group h3 {
+    padding-top: 0;
   }
 
 }

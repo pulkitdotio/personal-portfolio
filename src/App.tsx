@@ -5,6 +5,7 @@ import { Connect } from "./components/sections/Connect";
 import { HeroAbout } from "./components/sections/HeroAbout";
 import { PlaceholderSections } from "./components/sections/PlaceholderSections";
 import { Projects } from "./components/sections/Projects";
+import { TechStack } from "./components/sections/TechStack";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <HeroAbout />
         <Connect />
         <Projects />
+        <TechStack />
         <PlaceholderSections />
       </main>
     </SmoothScroll>

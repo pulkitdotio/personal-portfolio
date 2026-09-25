@@ -14,7 +14,8 @@
     "lucide-react": "^1.48.0",
     "motion": "^13.4.4",
     "react": "^19.3.0",
-    "react-dom": "^19.3.0"
+    "react-dom": "^19.3.0",
+    "simple-icons": "^16.32.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

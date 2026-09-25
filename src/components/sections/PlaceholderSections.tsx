@@ -1,4 +1,4 @@
-const placeholders = ["stack", "github"] as const;
+const placeholders = ["github"] as const;
 
 export function PlaceholderSections() {
   return (
