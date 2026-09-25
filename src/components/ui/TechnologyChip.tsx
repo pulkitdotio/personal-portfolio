@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import { Braces, Code2, type LucideIcon } from "lucide-react";
+import { motion } from "motion/react";
 import {
   siCss,
   siDocker,
@@ -28,6 +29,7 @@ import {
   type SimpleIcon,
 } from "simple-icons";
 import type { Technology, TechnologyIconName } from "../../data/portfolio";
+import { technologyChipReveal } from "../../lib/motion";
 
 type TechnologyChipProps = {
   technology: Technology;
@@ -86,11 +88,17 @@ export function TechnologyChip({ technology }: TechnologyChipProps) {
   } as CSSProperties;
 
   return (
-    <li className="technology-chip" style={style}>
+    <motion.li
+      className="technology-chip"
+      style={style}
+      variants={technologyChipReveal}
+      whileHover={{ y: -2 }}
+      transition={{ duration: 0.18, ease: "easeOut" }}
+    >
       <span className="technology-icon-shell">
         <TechnologyIcon icon={technology.icon} />
       </span>
       <span>{technology.name}</span>
-    </li>
+    </motion.li>
   );
 }
