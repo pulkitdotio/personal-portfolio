@@ -431,7 +431,8 @@ main {
 
 .connect-section,
 .projects-section,
-.stack-section {
+.stack-section,
+.github-section {
   scroll-margin-top: calc(var(--header-height) + 1.25rem);
 }
 
@@ -1151,7 +1152,7 @@ main {
 }
 
 .stack-section {
-  padding-bottom: clamp(5rem, 9vw, 8rem);
+  padding-bottom: clamp(4.5rem, 8vw, 7rem);
 }
 
 .stack-groups,
@@ -1248,9 +1249,158 @@ main {
   filter: brightness(1.12);
 }
 
-.phase-placeholder {
-  min-height: 12rem;
-  scroll-margin-top: calc(var(--header-height) + 1.25rem);
+.github-section {
+  padding-bottom: clamp(4rem, 7vw, 6rem);
+}
+
+.github-panel {
+  overflow: hidden;
+  border: 1px solid rgb(255 255 255 / 9%);
+  border-radius: var(--radius-md);
+  background:
+    radial-gradient(circle at 86% 0%, rgb(108 103 224 / 10%), transparent 27rem),
+    linear-gradient(145deg, rgb(12 12 14 / 97%), rgb(5 5 6 / 98%));
+  box-shadow:
+    inset 0 1px rgb(255 255 255 / 3%),
+    0 24px 70px rgb(0 0 0 / 24%);
+}
+
+.github-panel-header,
+.github-panel-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.github-panel-header {
+  padding: 1rem clamp(1rem, 2.5vw, 1.75rem);
+  border-bottom: 1px solid rgb(255 255 255 / 7%);
+  color: var(--color-muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+}
+
+.github-panel-header > div {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.github-panel-header svg {
+  width: 0.95rem;
+  height: 0.95rem;
+  color: var(--color-ink);
+}
+
+.github-year {
+  color: var(--color-accent);
+}
+
+.github-calendar-viewport {
+  position: relative;
+  padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 3.5vw, 2.75rem) 1.5rem;
+}
+
+.github-calendar-frame {
+  min-height: 11.25rem;
+  color: var(--color-muted);
+}
+
+.github-calendar-frame > div {
+  display: grid;
+  min-height: 11.25rem;
+  place-items: center;
+  color: var(--color-muted);
+  font-size: 0.86rem;
+  text-align: center;
+}
+
+.github-calendar-frame .react-activity-calendar {
+  width: 100%;
+  min-width: 0;
+}
+
+.github-calendar-frame .react-activity-calendar__scroll-container {
+  overflow-x: auto;
+  padding-bottom: 0.35rem;
+  scrollbar-width: none;
+}
+
+.github-calendar-frame .react-activity-calendar__scroll-container::-webkit-scrollbar {
+  display: none;
+}
+
+.github-calendar-frame .react-activity-calendar__calendar {
+  width: calc(100% - 2.25rem);
+  min-width: 50rem;
+  height: auto;
+}
+
+.github-calendar-frame .react-activity-calendar__footer {
+  gap: 1rem;
+  margin-top: 1.1rem;
+  color: var(--color-dim);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.62rem;
+}
+
+.github-calendar-frame .react-activity-calendar__legend-colors {
+  align-items: center;
+}
+
+.react-activity-calendar__tooltip {
+  padding: 0.42rem 0.58rem;
+  border: 1px solid rgb(255 255 255 / 12%);
+  border-radius: 0.45rem;
+  color: var(--color-ink) !important;
+  background: #0d0d10 !important;
+  box-shadow: 0 12px 30px rgb(0 0 0 / 48%);
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+}
+
+.react-activity-calendar__tooltip-arrow {
+  fill: #0d0d10 !important;
+}
+
+.github-panel-footer {
+  min-height: 3.85rem;
+  padding: 0.7rem clamp(1rem, 2.5vw, 1.75rem);
+  border-top: 1px solid rgb(255 255 255 / 7%);
+}
+
+.github-scroll-hint {
+  display: none;
+  color: var(--color-dim);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.04em;
+}
+
+.github-profile-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-left: auto;
+  border-radius: 0.35rem;
+  color: var(--color-muted);
+  font-size: 0.76rem;
+  font-weight: 560;
+  transition:
+    color 180ms ease,
+    transform 200ms var(--ease-out-expo);
+}
+
+.github-profile-link svg {
+  width: 0.82rem;
+  height: 0.82rem;
+}
+
+.github-profile-link:hover,
+.github-profile-link:focus-visible {
+  color: var(--color-ink);
+  transform: translateY(-1px);
 }
 
 @media (max-width: 899px) {
@@ -1370,6 +1520,20 @@ main {
     padding: 0.48rem 0.68rem 0.48rem 0.54rem;
   }
 
+  .github-calendar-viewport::after {
+    position: absolute;
+    top: 1rem;
+    right: 0;
+    bottom: 1.25rem;
+    width: 2.5rem;
+    background: linear-gradient(90deg, transparent, rgb(6 6 8 / 88%));
+    content: "";
+    pointer-events: none;
+  }
+
+  .github-scroll-hint {
+    display: inline;
+  }
 }
 
 @media (max-width: 390px) {
