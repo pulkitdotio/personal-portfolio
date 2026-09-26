@@ -2,7 +2,6 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { MotionConfig } from "motion/react";
 import App from "./App";
-import "lenis/dist/lenis.css";
 import "./styles/globals.css";
 
 createRoot(document.getElementById("root")!).render(

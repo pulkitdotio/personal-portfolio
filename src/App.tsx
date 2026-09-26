@@ -1,6 +1,5 @@
 import { Header } from "./components/layout/Header";
 import { SiteFooter } from "./components/layout/SiteFooter";
-import { SmoothScroll } from "./components/layout/SmoothScroll";
 import { Banner } from "./components/sections/Banner";
 import { ClosingCta } from "./components/sections/ClosingCta";
 import { Connect } from "./components/sections/Connect";
@@ -11,7 +10,7 @@ import { TechStack } from "./components/sections/TechStack";
 
 function App() {
   return (
-    <SmoothScroll>
+    <>
       <a className="skip-link" href="#main-content">
         Skip to main content
       </a>
@@ -27,7 +26,7 @@ function App() {
         <ClosingCta />
       </main>
       <SiteFooter />
-    </SmoothScroll>
+    </>
   );
 }
 
