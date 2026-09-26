@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Menu, X } from "lucide-react";
 import feather from "../../assets/identity/feather.jpg";
 import { navigationItems } from "../../data/navigation";
 import { Container } from "./Container";
 
 export function Header() {
+  const shouldReduceMotion = useReducedMotion();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
@@ -31,6 +32,23 @@ export function Header() {
       if (event.key === "Escape") {
         setIsMenuOpen(false);
         menuButtonRef.current?.focus();
+        return;
+      }
+
+      if (event.key === "Tab") {
+        const menuLinks = Array.from(
+          mobileMenuRef.current?.querySelectorAll<HTMLAnchorElement>("a[href]") ?? [],
+        );
+        const firstLink = menuLinks.at(0);
+        const lastLink = menuLinks.at(-1);
+
+        if (event.shiftKey && document.activeElement === firstLink) {
+          event.preventDefault();
+          lastLink?.focus();
+        } else if (!event.shiftKey && document.activeElement === lastLink) {
+          event.preventDefault();
+          firstLink?.focus();
+        }
       }
     };
 
@@ -55,7 +73,7 @@ export function Header() {
   return (
     <motion.header
       className={`site-header ${isScrolled ? "site-header--scrolled" : ""}`}
-      initial={{ opacity: 0, y: -10 }}
+      initial={shouldReduceMotion ? false : { opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
     >

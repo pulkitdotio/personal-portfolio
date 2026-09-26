@@ -1,5 +1,5 @@
 import { ArrowUpRight, GitFork } from "lucide-react";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import type { ComponentType } from "react";
 import type { Project, ProjectVisualKind } from "../../data/portfolio";
 import { revealUp } from "../../lib/motion";
@@ -20,16 +20,20 @@ const projectVisuals: Record<ProjectVisualKind, ComponentType> = {
 };
 
 export function ProjectCard({ project, index }: ProjectCardProps) {
+  const shouldReduceMotion = useReducedMotion();
   const ProjectVisual = projectVisuals[project.visual];
 
   return (
     <motion.article
       className={`project-card ${project.featured ? "project-card--featured" : ""}`}
       variants={revealUp}
-      whileHover={{ y: -4 }}
+      whileHover={shouldReduceMotion ? undefined : { y: -4 }}
       transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
     >
-      <motion.div className="project-visual" whileHover={{ y: -2 }}>
+      <motion.div
+        className="project-visual"
+        whileHover={shouldReduceMotion ? undefined : { y: -2 }}
+      >
         <ProjectVisual />
       </motion.div>
 

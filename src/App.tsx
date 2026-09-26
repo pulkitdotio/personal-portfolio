@@ -13,11 +13,11 @@ function App() {
   return (
     <SmoothScroll>
       <a className="skip-link" href="#main-content">
-        Skip to content
+        Skip to main content
       </a>
       <div id="top" />
       <Header />
-      <main id="main-content">
+      <main id="main-content" tabIndex={-1}>
         <Banner />
         <HeroAbout />
         <Connect />

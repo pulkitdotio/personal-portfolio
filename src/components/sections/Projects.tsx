@@ -1,15 +1,18 @@
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { projects } from "../../data/portfolio";
 import { revealUp, staggerChildren } from "../../lib/motion";
 import { Container } from "../layout/Container";
 import { ProjectCard } from "../projects/ProjectCard";
 
 export function Projects() {
+  const shouldReduceMotion = useReducedMotion();
+  const initialRevealState = shouldReduceMotion ? "visible" : "hidden";
+
   return (
     <Container as="section" id="projects" className="projects-section" aria-labelledby="projects-title">
       <motion.div
         className="section-heading projects-heading"
-        initial="hidden"
+        initial={initialRevealState}
         whileInView="visible"
         viewport={{ once: true, amount: 0.65 }}
         variants={revealUp}
@@ -23,7 +26,7 @@ export function Projects() {
 
       <motion.div
         className="projects-grid"
-        initial="hidden"
+        initial={initialRevealState}
         whileInView="visible"
         viewport={{ once: true, amount: 0.08 }}
         variants={staggerChildren}

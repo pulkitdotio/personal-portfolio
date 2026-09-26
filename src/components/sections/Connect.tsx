@@ -1,15 +1,18 @@
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { socialLinks } from "../../data/portfolio";
 import { revealUp, staggerChildren } from "../../lib/motion";
 import { Container } from "../layout/Container";
 import { SocialLink } from "../ui/SocialLink";
 
 export function Connect() {
+  const shouldReduceMotion = useReducedMotion();
+  const initialRevealState = shouldReduceMotion ? "visible" : "hidden";
+
   return (
     <Container as="section" id="connect" className="connect-section" aria-labelledby="connect-title">
       <motion.div
         className="section-heading connect-heading"
-        initial="hidden"
+        initial={initialRevealState}
         whileInView="visible"
         viewport={{ once: true, amount: 0.55 }}
         variants={revealUp}
@@ -23,7 +26,7 @@ export function Connect() {
 
       <motion.div
         className="social-links"
-        initial="hidden"
+        initial={initialRevealState}
         whileInView="visible"
         viewport={{ once: true, amount: 0.45 }}
         variants={staggerChildren}

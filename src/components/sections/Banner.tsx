@@ -1,4 +1,4 @@
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { Container } from "../layout/Container";
 
 const signalPaths = [
@@ -10,11 +10,17 @@ const signalPaths = [
 ];
 
 export function Banner() {
+  const shouldReduceMotion = useReducedMotion();
+
   return (
     <Container>
       <motion.div
         className="banner"
-        initial={{ opacity: 0, clipPath: "inset(0 0 14% 0 round 14px)" }}
+        initial={
+          shouldReduceMotion
+            ? false
+            : { opacity: 0, clipPath: "inset(0 0 14% 0 round 14px)" }
+        }
         animate={{ opacity: 1, clipPath: "inset(0 0 0% 0 round 14px)" }}
         transition={{ duration: 0.85, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
         aria-hidden="true"
@@ -51,7 +57,7 @@ export function Banner() {
               d={path}
               stroke="url(#signal-gradient)"
               strokeWidth={index === 2 ? 1.35 : 0.8}
-              initial={{ pathLength: 0, opacity: 0 }}
+              initial={shouldReduceMotion ? false : { pathLength: 0, opacity: 0 }}
               animate={{ pathLength: 1, opacity: 1 }}
               transition={{
                 pathLength: { duration: 1.35, delay: 0.25 + index * 0.06 },

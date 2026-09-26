@@ -1,14 +1,17 @@
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import feather from "../../assets/identity/feather.jpg";
 import { revealUp, staggerChildren } from "../../lib/motion";
 import { Container } from "../layout/Container";
 
 export function HeroAbout() {
+  const shouldReduceMotion = useReducedMotion();
+  const initialRevealState = shouldReduceMotion ? "visible" : "hidden";
+
   return (
     <Container as="section" id="about" className="hero-section" aria-labelledby="hero-title">
       <motion.div
         className="identity-block"
-        initial="hidden"
+        initial={initialRevealState}
         animate="visible"
         variants={staggerChildren}
       >
@@ -31,7 +34,7 @@ export function HeroAbout() {
 
       <motion.div
         className="about-copy"
-        initial="hidden"
+        initial={initialRevealState}
         animate="visible"
         variants={staggerChildren}
       >
