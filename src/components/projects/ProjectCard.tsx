@@ -1,72 +1,43 @@
-import { ArrowUpRight, GitFork } from "lucide-react";
-import { motion, useReducedMotion } from "motion/react";
-import type { ComponentType } from "react";
-import type { Project, ProjectVisualKind } from "../../data/portfolio";
-import { revealUp } from "../../lib/motion";
+import { ArrowUpRight, Globe2 } from "lucide-react";
+import { siGithub } from "simple-icons/icons";
+import type { Project } from "../../data/portfolio";
 import { TechTag } from "../ui/TechTag";
-import { LedgerPlaceholder } from "./project-visuals/LedgerPlaceholder";
-import { PrepRolePlaceholder } from "./project-visuals/PrepRolePlaceholder";
-import { SentinelPlaceholder } from "./project-visuals/SentinelPlaceholder";
+import { ProjectMediaFrame } from "./ProjectMedia";
 
 type ProjectCardProps = {
   project: Project;
-  index: number;
 };
 
-const projectVisuals: Record<ProjectVisualKind, ComponentType> = {
-  sentinel: SentinelPlaceholder,
-  preprole: PrepRolePlaceholder,
-  ledger: LedgerPlaceholder,
-};
+function GitHubMark() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d={siGithub.path} fill="currentColor" />
+    </svg>
+  );
+}
 
-export function ProjectCard({ project, index }: ProjectCardProps) {
-  const shouldReduceMotion = useReducedMotion();
-  const ProjectVisual = projectVisuals[project.visual];
+export function ProjectCard({ project }: ProjectCardProps) {
+  const isLive = project.actions.some((action) => action.kind === "live");
 
   return (
-    <motion.article
-      className={`project-card ${project.featured ? "project-card--featured" : ""}`}
-      variants={revealUp}
-      whileHover={shouldReduceMotion ? undefined : { y: -4 }}
-      transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-    >
-      <motion.div
-        className="project-visual"
-        whileHover={shouldReduceMotion ? undefined : { y: -2 }}
-      >
-        <ProjectVisual />
-      </motion.div>
+    <article className="project-card">
+      <ProjectMediaFrame title={project.title} media={project.media} />
 
       <div className="project-content">
         <div className="project-title-row">
-          <div>
-            <span className="project-number">0{index + 1}</span>
-            <h3>{project.title}</h3>
-          </div>
-          <div className="project-actions" aria-label={`${project.title} links`}>
-            {project.actions.map((action) => (
-              <a
-                key={action.kind}
-                href={action.href}
-                target="_blank"
-                rel="noreferrer noopener"
-                aria-label={`${action.label}: ${project.title} (opens in a new tab)`}
-              >
-                {action.kind === "github" ? <GitFork aria-hidden="true" /> : null}
-                <span>{action.label}</span>
-                {action.kind === "live" ? <ArrowUpRight aria-hidden="true" /> : null}
-              </a>
-            ))}
-          </div>
+          <h3>{project.title}</h3>
+          {isLive ? (
+            <span className="project-live-status">
+              <span aria-hidden="true" />
+              Live
+            </span>
+          ) : null}
         </div>
 
         <p className="project-description">{project.description}</p>
 
         {project.engineeringHighlight ? (
-          <p className="engineering-highlight">
-            <span>Design note</span>
-            {project.engineeringHighlight}
-          </p>
+          <p className="engineering-highlight">{project.engineeringHighlight}</p>
         ) : null}
 
         <ul className="tech-tags" aria-label={`${project.title} technologies`}>
@@ -74,7 +45,27 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
             <TechTag key={technology.label} technology={technology} />
           ))}
         </ul>
+
+        <div className="project-actions" aria-label={`${project.title} links`}>
+          {project.actions.map((action) => (
+            <a
+              key={action.kind}
+              href={action.href}
+              target="_blank"
+              rel="noreferrer noopener"
+              aria-label={`${action.label}: ${project.title} (opens in a new tab)`}
+            >
+              {action.kind === "github" ? (
+                <GitHubMark />
+              ) : (
+                <Globe2 aria-hidden="true" />
+              )}
+              <span>{action.label}</span>
+              <ArrowUpRight className="project-action-arrow" aria-hidden="true" />
+            </a>
+          ))}
+        </div>
       </div>
-    </motion.article>
+    </article>
   );
 }

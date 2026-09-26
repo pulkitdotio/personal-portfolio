@@ -1,6 +1,6 @@
 import { motion, useReducedMotion } from "motion/react";
 import { projects } from "../../data/portfolio";
-import { revealUp, staggerChildren } from "../../lib/motion";
+import { revealUp } from "../../lib/motion";
 import { Container } from "../layout/Container";
 import { ProjectCard } from "../projects/ProjectCard";
 
@@ -11,29 +11,21 @@ export function Projects() {
   return (
     <Container as="section" id="projects" className="projects-section" aria-labelledby="projects-title">
       <motion.div
-        className="section-heading projects-heading"
-        initial={initialRevealState}
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.65 }}
-        variants={revealUp}
-      >
-        <div>
-          <p className="section-kicker">Build / 02</p>
-          <h2 id="projects-title">Projects</h2>
-        </div>
-        <p>A selection of full-stack, AI-assisted, and backend systems work.</p>
-      </motion.div>
-
-      <motion.div
-        className="projects-grid"
+        className="projects-section-content"
         initial={initialRevealState}
         whileInView="visible"
         viewport={{ once: true, amount: 0.08 }}
-        variants={staggerChildren}
+        variants={revealUp}
       >
-        {projects.map((project, index) => (
-          <ProjectCard key={project.title} project={project} index={index} />
-        ))}
+        <div className="projects-heading">
+          <h2 id="projects-title">Projects</h2>
+        </div>
+
+        <div className="projects-grid">
+          {projects.map((project) => (
+            <ProjectCard key={project.title} project={project} />
+          ))}
+        </div>
       </motion.div>
     </Container>
   );

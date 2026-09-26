@@ -19,15 +19,19 @@ export interface ProjectAction {
   kind: ProjectActionKind;
 }
 
-export type ProjectVisualKind = "sentinel" | "preprole" | "ledger";
+export interface ProjectMedia {
+  src: string;
+  alt: string;
+  objectFit?: "cover" | "contain";
+  objectPosition?: string;
+}
 
 export interface Project {
   title: string;
   description: string;
   technologies: ProjectTechnology[];
   actions: ProjectAction[];
-  visual: ProjectVisualKind;
-  featured?: boolean;
+  media?: ProjectMedia;
   engineeringHighlight?: string;
 }
 
@@ -115,18 +119,16 @@ export const projects: Project[] = [
     ],
     actions: [
       {
-        label: "GitHub",
-        href: "https://github.com/pulkitdotio/Sentinel",
-        kind: "github",
-      },
-      {
         label: "Live",
         href: "https://sentinel-jet-one.vercel.app",
         kind: "live",
       },
+      {
+        label: "GitHub",
+        href: "https://github.com/pulkitdotio/Sentinel",
+        kind: "github",
+      },
     ],
-    visual: "sentinel",
-    featured: true,
   },
   {
     title: "PrepRole AI",
@@ -141,17 +143,16 @@ export const projects: Project[] = [
     ],
     actions: [
       {
-        label: "GitHub",
-        href: "https://github.com/pulkitdotio/PrepRole_AI",
-        kind: "github",
-      },
-      {
         label: "Live",
         href: "https://prep-role-ai.vercel.app",
         kind: "live",
       },
+      {
+        label: "GitHub",
+        href: "https://github.com/pulkitdotio/PrepRole_AI",
+        kind: "github",
+      },
     ],
-    visual: "preprole",
   },
   {
     title: "ledger-api",
@@ -172,7 +173,6 @@ export const projects: Project[] = [
         kind: "github",
       },
     ],
-    visual: "ledger",
   },
 ];
 
