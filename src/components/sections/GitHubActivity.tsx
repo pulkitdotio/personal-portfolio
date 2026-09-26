@@ -1,9 +1,9 @@
 import { cloneElement } from "react";
-import { ArrowUpRight, GitFork } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import { GitHubCalendar } from "react-github-calendar";
 import "react-github-calendar/tooltips.css";
-import { githubPanelReveal, revealUp } from "../../lib/motion";
+import { revealUp } from "../../lib/motion";
 import { Container } from "../layout/Container";
 
 const GITHUB_USERNAME = "pulkitdotio";
@@ -38,32 +38,14 @@ export function GitHubActivity() {
       aria-labelledby="github-title"
     >
       <motion.div
-        className="section-heading github-heading"
+        className="github-content"
         initial={initialRevealState}
         whileInView="visible"
-        viewport={{ once: true, amount: 0.55 }}
+        viewport={{ once: true, amount: 0.12 }}
         variants={revealUp}
       >
-        <div>
-          <p className="section-kicker">Activity / 04</p>
+        <div className="github-heading">
           <h2 id="github-title">GitHub Activity</h2>
-        </div>
-        <p>A snapshot of my contributions this year.</p>
-      </motion.div>
-
-      <motion.div
-        className="github-panel"
-        initial={initialRevealState}
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.2 }}
-        variants={githubPanelReveal}
-      >
-        <div className="github-panel-header">
-          <div>
-            <GitFork aria-hidden="true" />
-            <span>Contribution calendar</span>
-          </div>
-          <span className="github-year">{currentYear}</span>
         </div>
 
         <div className="github-calendar-viewport">
@@ -73,9 +55,9 @@ export function GitHubActivity() {
               year={currentYear}
               colorScheme="dark"
               theme={contributionTheme}
-              blockSize={15}
+              blockSize={13}
               blockMargin={4}
-              blockRadius={3}
+              blockRadius={2}
               fontSize={12}
               showWeekdayLabels={["mon", "wed", "fri"]}
               labels={{
@@ -99,9 +81,9 @@ export function GitHubActivity() {
           </div>
         </div>
 
-        <div className="github-panel-footer">
+        <div className="github-footer">
           <span className="github-scroll-hint" aria-hidden="true">
-            Scroll to explore
+            Swipe to explore
           </span>
           <a
             className="github-profile-link"

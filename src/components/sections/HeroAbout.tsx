@@ -1,6 +1,6 @@
 import { motion, useReducedMotion } from "motion/react";
 import feather from "../../assets/identity/feather.jpg";
-import { revealUp, staggerChildren } from "../../lib/motion";
+import { revealUp } from "../../lib/motion";
 import { Container } from "../layout/Container";
 
 export function HeroAbout() {
@@ -13,23 +13,17 @@ export function HeroAbout() {
         className="identity-block"
         initial={initialRevealState}
         animate="visible"
-        variants={staggerChildren}
+        variants={revealUp}
       >
-        <motion.div className="feather-frame" variants={revealUp}>
+        <div className="feather-frame">
           <img src={feather} alt="Pulkit Sharma's feather identity mark" />
-        </motion.div>
+        </div>
 
-        <motion.div className="identity-copy" variants={staggerChildren}>
-          <motion.h1 id="hero-title" variants={revealUp}>
-            Pulkit Sharma
-          </motion.h1>
-          <motion.p className="primary-role" variants={revealUp}>
-            Full Stack Developer
-          </motion.p>
-          <motion.p className="secondary-role" variants={revealUp}>
-            AI/ML Enthusiast
-          </motion.p>
-        </motion.div>
+        <div className="identity-copy">
+          <h1 id="hero-title">Pulkit Sharma</h1>
+          <p className="primary-role">Full Stack Developer</p>
+          <p className="secondary-role">AI/ML Enthusiast</p>
+        </div>
       </motion.div>
 
       <motion.div

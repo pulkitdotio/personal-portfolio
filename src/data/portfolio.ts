@@ -69,11 +69,6 @@ export interface Technology {
   brandColor?: string;
 }
 
-export interface TechnologyGroup {
-  title: string;
-  technologies: Technology[];
-}
-
 // A real Resume item can be inserted first once a valid file or URL is available.
 export const socialLinks: SocialLink[] = [
   {
@@ -176,61 +171,31 @@ export const projects: Project[] = [
   },
 ];
 
-export const technologyGroups: TechnologyGroup[] = [
-  {
-    title: "Languages",
-    technologies: [
-      { name: "TypeScript", icon: "typescript", brandColor: "#3178c6" },
-      { name: "JavaScript", icon: "javascript", brandColor: "#f7df1e" },
-      { name: "Python", icon: "python", brandColor: "#4584b6" },
-      { name: "Java", icon: "java", brandColor: "#e76f00" },
-      { name: "HTML", icon: "html", brandColor: "#e34f26" },
-      { name: "CSS", icon: "css", brandColor: "#8b72d8" },
-    ],
-  },
-  {
-    title: "Frontend",
-    technologies: [
-      { name: "React.js", icon: "react", brandColor: "#61dafb" },
-      { name: "Next.js", icon: "nextjs", brandColor: "#f5f5f5" },
-      { name: "Tailwind CSS", icon: "tailwind", brandColor: "#06b6d4" },
-      { name: "shadcn/ui", icon: "shadcn", brandColor: "#f5f5f5" },
-    ],
-  },
-  {
-    title: "Backend",
-    technologies: [
-      { name: "Node.js", icon: "nodejs", brandColor: "#5fa04e" },
-      { name: "Express.js", icon: "express", brandColor: "#f5f5f5" },
-      { name: "REST APIs", icon: "rest-api", brandColor: "#f5f5f5" },
-    ],
-  },
-  {
-    title: "Databases / Infrastructure",
-    technologies: [
-      { name: "PostgreSQL", icon: "postgresql", brandColor: "#5b8fd4" },
-      { name: "MongoDB", icon: "mongodb", brandColor: "#47a248" },
-      { name: "Redis", icon: "redis", brandColor: "#ff4438" },
-      { name: "Supabase", icon: "supabase", brandColor: "#3fcf8e" },
-    ],
-  },
-  {
-    title: "AI / ML",
-    technologies: [
-      { name: "TensorFlow", icon: "tensorflow", brandColor: "#ff6f00" },
-      { name: "Pandas", icon: "pandas", brandColor: "#e70488" },
-      { name: "scikit-learn", icon: "scikit-learn", brandColor: "#f7931e" },
-    ],
-  },
-  {
-    title: "Tools",
-    technologies: [
-      { name: "Git", icon: "git", brandColor: "#f05032" },
-      { name: "GitHub", icon: "github", brandColor: "#f5f5f5" },
-      { name: "Docker", icon: "docker", brandColor: "#2496ed" },
-      { name: "Postman", icon: "postman", brandColor: "#ff6c37" },
-      { name: "VS Code", icon: "vscode", brandColor: "#23a8f2" },
-      { name: "Vercel", icon: "vercel", brandColor: "#f5f5f5" },
-    ],
-  },
+export const technologies: Technology[] = [
+  { name: "TypeScript", icon: "typescript", brandColor: "#3178c6" },
+  { name: "JavaScript", icon: "javascript", brandColor: "#f7df1e" },
+  { name: "Python", icon: "python", brandColor: "#3776ab" },
+  { name: "Java", icon: "java", brandColor: "#f89820" },
+  { name: "HTML", icon: "html", brandColor: "#e34f26" },
+  { name: "CSS", icon: "css", brandColor: "#663399" },
+  { name: "React.js", icon: "react", brandColor: "#61dafb" },
+  { name: "Next.js", icon: "nextjs", brandColor: "#f5f5f5" },
+  { name: "Tailwind CSS", icon: "tailwind", brandColor: "#06b6d4" },
+  { name: "shadcn/ui", icon: "shadcn", brandColor: "#f5f5f5" },
+  { name: "Node.js", icon: "nodejs", brandColor: "#5fa04e" },
+  { name: "Express.js", icon: "express", brandColor: "#f5f5f5" },
+  { name: "REST APIs", icon: "rest-api", brandColor: "#a1a1aa" },
+  { name: "PostgreSQL", icon: "postgresql", brandColor: "#4169e1" },
+  { name: "MongoDB", icon: "mongodb", brandColor: "#47a248" },
+  { name: "Redis", icon: "redis", brandColor: "#ff4438" },
+  { name: "Supabase", icon: "supabase", brandColor: "#3fcf8e" },
+  { name: "TensorFlow", icon: "tensorflow", brandColor: "#ff6f00" },
+  { name: "Pandas", icon: "pandas", brandColor: "#e70488" },
+  { name: "scikit-learn", icon: "scikit-learn", brandColor: "#f7931e" },
+  { name: "Git", icon: "git", brandColor: "#f05032" },
+  { name: "GitHub", icon: "github", brandColor: "#f5f5f5" },
+  { name: "Docker", icon: "docker", brandColor: "#2496ed" },
+  { name: "Postman", icon: "postman", brandColor: "#ff6c37" },
+  { name: "VS Code", icon: "vscode", brandColor: "#007acc" },
+  { name: "Vercel", icon: "vercel", brandColor: "#f5f5f5" },
 ];
