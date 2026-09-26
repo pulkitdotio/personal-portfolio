@@ -1,4 +1,4 @@
-export type SocialIconName = "github" | "linkedin" | "x" | "email";
+export type SocialIconName = "resume" | "github" | "linkedin" | "x" | "email";
 
 export interface SocialLink {
   label: string;
@@ -70,6 +70,7 @@ export interface TechnologyGroup {
   technologies: Technology[];
 }
 
+// A real Resume item can be inserted first once a valid file or URL is available.
 export const socialLinks: SocialLink[] = [
   {
     label: "GitHub",
@@ -201,7 +202,7 @@ export const technologyGroups: TechnologyGroup[] = [
     technologies: [
       { name: "Node.js", icon: "nodejs", brandColor: "#5fa04e" },
       { name: "Express.js", icon: "express", brandColor: "#f5f5f5" },
-      { name: "REST APIs", icon: "rest-api", brandColor: "#8791ff" },
+      { name: "REST APIs", icon: "rest-api", brandColor: "#f5f5f5" },
     ],
   },
   {

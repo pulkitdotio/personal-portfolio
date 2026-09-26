@@ -10,7 +10,7 @@ const GITHUB_USERNAME = "pulkitdotio";
 const GITHUB_PROFILE_URL = `https://github.com/${GITHUB_USERNAME}`;
 
 const contributionTheme = {
-  dark: ["#15151a", "#292750", "#46428a", "#625ed0", "#8791ff"],
+  dark: ["#151515", "#0e4429", "#006d32", "#26a641", "#39d353"],
 };
 
 function formatContributionLabel(activity: { date: string; count: number }) {

@@ -20,12 +20,12 @@ export function HeroAbout() {
         </motion.div>
 
         <motion.div className="identity-copy" variants={staggerChildren}>
-          <motion.p className="eyebrow" variants={revealUp}>
-            Full Stack Developer
-          </motion.p>
           <motion.h1 id="hero-title" variants={revealUp}>
             Pulkit Sharma
           </motion.h1>
+          <motion.p className="primary-role" variants={revealUp}>
+            Full Stack Developer
+          </motion.p>
           <motion.p className="secondary-role" variants={revealUp}>
             AI/ML Enthusiast
           </motion.p>
@@ -35,20 +35,22 @@ export function HeroAbout() {
       <motion.div
         className="about-copy"
         initial={initialRevealState}
-        animate="visible"
-        variants={staggerChildren}
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.45 }}
+        variants={revealUp}
       >
-        <motion.p className="section-kicker" variants={revealUp}>
-          About / 01
-        </motion.p>
-        <motion.h2 variants={revealUp}>Building across the whole system.</motion.h2>
-        <motion.p className="about-body" variants={revealUp}>
-          I build full-stack web applications and backend systems with an emphasis on clean
-          architecture, reliable APIs, and polished interfaces. I like understanding products end
-          to end — from the UI people use to the services, queues, databases, and models behind
-          them. I enjoy turning ideas into practical, well-structured software and exploring AI/ML
-          where it adds real value.
-        </motion.p>
+        <h2>About</h2>
+        <ul className="about-list">
+          <li>I build full-stack web applications, mostly with the MERN stack.</li>
+          <li>
+            I enjoy backend work as much as frontend work, especially APIs, databases, and the
+            systems behind an application.
+          </li>
+          <li>
+            I&apos;m also interested in AI/ML and use Python-based tools when a project genuinely
+            benefits from them.
+          </li>
+        </ul>
       </motion.div>
     </Container>
   );

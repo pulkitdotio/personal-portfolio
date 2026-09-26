@@ -1,41 +1,27 @@
 import { motion, useReducedMotion } from "motion/react";
 import { socialLinks } from "../../data/portfolio";
-import { revealUp, staggerChildren } from "../../lib/motion";
+import { revealUp } from "../../lib/motion";
 import { Container } from "../layout/Container";
 import { SocialLink } from "../ui/SocialLink";
 
 export function Connect() {
   const shouldReduceMotion = useReducedMotion();
-  const initialRevealState = shouldReduceMotion ? "visible" : "hidden";
 
   return (
     <Container as="section" id="connect" className="connect-section" aria-labelledby="connect-title">
       <motion.div
-        className="section-heading connect-heading"
-        initial={initialRevealState}
+        className="connect-content"
+        initial={shouldReduceMotion ? "visible" : "hidden"}
         whileInView="visible"
-        viewport={{ once: true, amount: 0.55 }}
+        viewport={{ once: true, amount: 0.35 }}
         variants={revealUp}
       >
-        <div>
-          <p className="section-kicker">Say hello</p>
-          <h2 id="connect-title">Connect</h2>
+        <h2 id="connect-title">Connect</h2>
+        <div className="social-links">
+          {socialLinks.map((link) => (
+            <SocialLink key={link.label} link={link} />
+          ))}
         </div>
-        <p>Find me elsewhere on the web, or send a note directly.</p>
-      </motion.div>
-
-      <motion.div
-        className="social-links"
-        initial={initialRevealState}
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.45 }}
-        variants={staggerChildren}
-      >
-        {socialLinks.map((link) => (
-          <motion.div key={link.label} variants={revealUp}>
-            <SocialLink link={link} />
-          </motion.div>
-        ))}
       </motion.div>
     </Container>
   );

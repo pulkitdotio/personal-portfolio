@@ -8,16 +8,8 @@ import { Container } from "./Container";
 export function Header() {
   const shouldReduceMotion = useReducedMotion();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 16);
-    handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   useEffect(() => {
     if (!isMenuOpen) {
@@ -72,14 +64,14 @@ export function Header() {
 
   return (
     <motion.header
-      className={`site-header ${isScrolled ? "site-header--scrolled" : ""}`}
-      initial={shouldReduceMotion ? false : { opacity: 0, y: -10 }}
+      className="site-header"
+      initial={shouldReduceMotion ? false : { opacity: 0, y: -8 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
     >
       <Container className="header-inner">
         <a className="brand-link" href="#top" aria-label="Pulkit — back to top">
-          <img src={feather} alt="" width="36" height="36" />
+          <img src={feather} alt="" width="30" height="30" />
           <span>Pulkit</span>
         </a>
 
@@ -110,22 +102,21 @@ export function Header() {
             className="mobile-menu-shell"
             id="mobile-navigation"
             ref={mobileMenuRef}
-            initial={{ opacity: 0 }}
+            initial={shouldReduceMotion ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: shouldReduceMotion ? 0 : 0.18 }}
           >
             <motion.nav
               className="mobile-nav"
               aria-label="Mobile navigation"
-              initial={{ opacity: 0, y: -10 }}
+              initial={shouldReduceMotion ? false : { opacity: 0, y: -8 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -6 }}
-              transition={{ duration: 0.25, ease: "easeOut" }}
+              exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: -6 }}
+              transition={{ duration: shouldReduceMotion ? 0 : 0.2, ease: "easeOut" }}
             >
-              {navigationItems.map((item, index) => (
+              {navigationItems.map((item) => (
                 <a key={item.href} href={item.href} onClick={closeMenu}>
-                  <span aria-hidden="true">0{index + 1}</span>
                   {item.label}
                 </a>
               ))}
