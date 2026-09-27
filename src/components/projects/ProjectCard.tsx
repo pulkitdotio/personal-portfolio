@@ -1,6 +1,6 @@
 import { ArrowUpRight, Globe2 } from "lucide-react";
 import { motion, type Variants } from "motion/react";
-import { siGithub } from "simple-icons/icons";
+import { siGithub } from "simple-icons";
 import type { Project } from "../../data/portfolio";
 import { sectionViewport } from "../../lib/motion";
 import { TechTag } from "../ui/TechTag";

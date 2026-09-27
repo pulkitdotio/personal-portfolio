@@ -65,5 +65,3 @@ export const reducedGroup: Variants = {
   hidden: {},
   visible: {},
 };
-
-export const revealUp = sectionReveal;
