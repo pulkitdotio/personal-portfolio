@@ -1,31 +1,37 @@
 import { motion, useReducedMotion } from "motion/react";
 import { technologies } from "../../data/portfolio";
-import { revealUp } from "../../lib/motion";
+import {
+  reducedGroup,
+  reducedReveal,
+  revealGroup,
+  sectionReveal,
+  sectionViewport,
+} from "../../lib/motion";
 import { Container } from "../layout/Container";
 import { TechnologyChip } from "../ui/TechnologyChip";
 
 export function TechStack() {
   const shouldReduceMotion = useReducedMotion();
-  const initialRevealState = shouldReduceMotion ? "visible" : "hidden";
+  const itemVariants = shouldReduceMotion ? reducedReveal : sectionReveal;
 
   return (
     <Container as="section" id="stack" className="stack-section" aria-labelledby="stack-title">
       <motion.div
         className="stack-content"
-        initial={initialRevealState}
+        initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.15 }}
-        variants={revealUp}
+        viewport={sectionViewport}
+        variants={shouldReduceMotion ? reducedGroup : revealGroup}
       >
-        <div className="stack-heading">
+        <motion.div className="stack-heading" variants={itemVariants}>
           <h2 id="stack-title">Tech Stack</h2>
-        </div>
+        </motion.div>
 
-        <ul className="technology-list" aria-label="Technologies">
+        <motion.ul className="technology-list" aria-label="Technologies" variants={itemVariants}>
           {technologies.map((technology) => (
             <TechnologyChip key={technology.name} technology={technology} />
           ))}
-        </ul>
+        </motion.ul>
       </motion.div>
     </Container>
   );

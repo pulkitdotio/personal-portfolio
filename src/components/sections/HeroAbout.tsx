@@ -1,19 +1,26 @@
 import { motion, useReducedMotion } from "motion/react";
 import feather from "../../assets/identity/feather.jpg";
-import { revealUp } from "../../lib/motion";
+import {
+  profileReveal,
+  reducedGroup,
+  reducedReveal,
+  revealGroup,
+  sectionReveal,
+  sectionViewport,
+} from "../../lib/motion";
 import { Container } from "../layout/Container";
 
 export function HeroAbout() {
   const shouldReduceMotion = useReducedMotion();
-  const initialRevealState = shouldReduceMotion ? "visible" : "hidden";
+  const itemVariants = shouldReduceMotion ? reducedReveal : sectionReveal;
 
   return (
     <Container as="section" id="about" className="hero-section" aria-labelledby="hero-title">
       <motion.div
         className="identity-block"
-        initial={initialRevealState}
+        initial={shouldReduceMotion ? false : "hidden"}
         animate="visible"
-        variants={revealUp}
+        variants={shouldReduceMotion ? reducedReveal : profileReveal}
       >
         <div className="feather-frame">
           <img src={feather} alt="Pulkit Sharma's feather identity mark" />
@@ -28,13 +35,13 @@ export function HeroAbout() {
 
       <motion.div
         className="about-copy"
-        initial={initialRevealState}
+        initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.45 }}
-        variants={revealUp}
+        viewport={sectionViewport}
+        variants={shouldReduceMotion ? reducedGroup : revealGroup}
       >
-        <h2>About</h2>
-        <ul className="about-list">
+        <motion.h2 variants={itemVariants}>About</motion.h2>
+        <motion.ul className="about-list" variants={itemVariants}>
           <li>I build full-stack web applications, mostly with the MERN stack.</li>
           <li>
             I enjoy backend work as much as frontend work, especially APIs, databases, and the
@@ -44,7 +51,7 @@ export function HeroAbout() {
             I&apos;m also interested in AI/ML and use Python-based tools when a project genuinely
             benefits from them.
           </li>
-        </ul>
+        </motion.ul>
       </motion.div>
     </Container>
   );

@@ -1,10 +1,17 @@
 import { Mail } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
-import { revealUp } from "../../lib/motion";
+import {
+  reducedGroup,
+  reducedReveal,
+  revealGroup,
+  sectionReveal,
+  sectionViewport,
+} from "../../lib/motion";
 import { Container } from "../layout/Container";
 
 export function ClosingCta() {
   const shouldReduceMotion = useReducedMotion();
+  const itemVariants = shouldReduceMotion ? reducedReveal : sectionReveal;
 
   return (
     <Container
@@ -14,21 +21,24 @@ export function ClosingCta() {
     >
       <motion.div
         className="closing-content"
-        initial={shouldReduceMotion ? "visible" : "hidden"}
+        initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.35 }}
-        variants={revealUp}
+        viewport={sectionViewport}
+        variants={shouldReduceMotion ? reducedGroup : revealGroup}
       >
-        <h2 id="closing-title">Let&apos;s talk.</h2>
-        <p>If you want to discuss a project or anything technical, send me an email.</p>
-        <a
+        <motion.div className="closing-copy" variants={itemVariants}>
+          <h2 id="closing-title">Let&apos;s talk.</h2>
+          <p>If you want to discuss a project or anything technical, send me an email.</p>
+        </motion.div>
+        <motion.a
           className="closing-email"
           href="mailto:pulkit1865@gmail.com"
           aria-label="Email Pulkit Sharma"
+          variants={itemVariants}
         >
           <Mail aria-hidden="true" />
           <span>Email</span>
-        </a>
+        </motion.a>
       </motion.div>
     </Container>
   );

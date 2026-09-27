@@ -63,12 +63,7 @@ export function Header() {
   const closeMenu = () => setIsMenuOpen(false);
 
   return (
-    <motion.header
-      className="site-header"
-      initial={shouldReduceMotion ? false : { opacity: 0, y: -8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-    >
+    <header className="site-header">
       <Container className="header-inner">
         <a className="brand-link" href="#top" aria-label="Pulkit — back to top">
           <img src={feather} alt="" width="30" height="30" />
@@ -124,6 +119,6 @@ export function Header() {
           </motion.div>
         ) : null}
       </AnimatePresence>
-    </motion.header>
+    </header>
   );
 }

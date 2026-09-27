@@ -425,7 +425,8 @@ main {
   transition:
     color 160ms ease,
     border-color 160ms ease,
-    background-color 160ms ease;
+    background-color 160ms ease,
+    transform 180ms var(--ease-out-expo);
 }
 
 .social-link-icon {
@@ -452,6 +453,7 @@ main {
   border-color: #e4e4e7;
   color: #09090b;
   background: #f4f4f5;
+  transform: translateY(-1px);
 }
 
 .projects-section {
@@ -629,7 +631,9 @@ main {
   color: var(--color-muted);
   font-size: 0.72rem;
   font-weight: 560;
-  transition: color 160ms ease;
+  transition:
+    color 160ms ease,
+    transform 180ms var(--ease-out-expo);
 }
 
 .project-actions svg {
@@ -647,6 +651,7 @@ main {
 .project-actions a:hover,
 .project-actions a:focus-visible {
   color: var(--color-ink);
+  transform: translateY(-1px);
 }
 
 .project-actions a:hover .project-action-arrow,
@@ -979,7 +984,9 @@ main {
   color: var(--color-dim);
   font-size: 0.7rem;
   font-weight: 520;
-  transition: color 180ms ease;
+  transition:
+    color 180ms ease,
+    transform 180ms var(--ease-out-expo);
 }
 
 .footer-links a:hover,
@@ -987,6 +994,7 @@ main {
 .back-to-top:hover,
 .back-to-top:focus-visible {
   color: var(--color-ink);
+  transform: translateY(-1px);
 }
 
 .footer-meta {
@@ -1151,7 +1159,13 @@ main {
   .github-profile-link,
   .social-link,
   .project-card,
+  .project-actions a,
   .closing-email {
+    transform: none !important;
+  }
+
+  .footer-links a,
+  .back-to-top {
     transform: none !important;
   }
 }

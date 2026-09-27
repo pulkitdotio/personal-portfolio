@@ -1,11 +1,14 @@
 import { ArrowUpRight, Globe2 } from "lucide-react";
+import { motion, type Variants } from "motion/react";
 import { siGithub } from "simple-icons/icons";
 import type { Project } from "../../data/portfolio";
+import { sectionViewport } from "../../lib/motion";
 import { TechTag } from "../ui/TechTag";
 import { ProjectMediaFrame } from "./ProjectMedia";
 
 type ProjectCardProps = {
   project: Project;
+  motionVariants: Variants;
 };
 
 function GitHubMark() {
@@ -16,11 +19,17 @@ function GitHubMark() {
   );
 }
 
-export function ProjectCard({ project }: ProjectCardProps) {
+export function ProjectCard({ project, motionVariants }: ProjectCardProps) {
   const isLive = project.actions.some((action) => action.kind === "live");
 
   return (
-    <article className="project-card">
+    <motion.article
+      className="project-card"
+      initial="hidden"
+      whileInView="visible"
+      viewport={sectionViewport}
+      variants={motionVariants}
+    >
       <ProjectMediaFrame title={project.title} media={project.media} />
 
       <div className="project-content">
@@ -66,6 +75,6 @@ export function ProjectCard({ project }: ProjectCardProps) {
           ))}
         </div>
       </div>
-    </article>
+    </motion.article>
   );
 }

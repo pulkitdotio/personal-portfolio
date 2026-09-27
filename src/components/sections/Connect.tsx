@@ -1,27 +1,42 @@
 import { motion, useReducedMotion } from "motion/react";
 import { socialLinks } from "../../data/portfolio";
-import { revealUp } from "../../lib/motion";
+import {
+  reducedGroup,
+  reducedReveal,
+  revealGroup,
+  sectionReveal,
+  sectionViewport,
+  socialLinksReveal,
+} from "../../lib/motion";
 import { Container } from "../layout/Container";
 import { SocialLink } from "../ui/SocialLink";
 
 export function Connect() {
   const shouldReduceMotion = useReducedMotion();
+  const itemVariants = shouldReduceMotion ? reducedReveal : sectionReveal;
 
   return (
     <Container as="section" id="connect" className="connect-section" aria-labelledby="connect-title">
       <motion.div
         className="connect-content"
-        initial={shouldReduceMotion ? "visible" : "hidden"}
+        initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.35 }}
-        variants={revealUp}
+        viewport={sectionViewport}
+        variants={shouldReduceMotion ? reducedGroup : revealGroup}
       >
-        <h2 id="connect-title">Connect</h2>
-        <div className="social-links">
+        <motion.h2 id="connect-title" variants={itemVariants}>
+          Connect
+        </motion.h2>
+        <motion.div
+          className="social-links"
+          variants={shouldReduceMotion ? reducedGroup : socialLinksReveal}
+        >
           {socialLinks.map((link) => (
-            <SocialLink key={link.label} link={link} />
+            <motion.div className="social-link-item" key={link.label} variants={itemVariants}>
+              <SocialLink link={link} />
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </motion.div>
     </Container>
   );
