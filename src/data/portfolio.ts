@@ -1,3 +1,10 @@
+import ledgerPreview from "../assets/projects/ledger-preview-1672.webp";
+import ledgerPreview960 from "../assets/projects/ledger-preview-960.webp";
+import preprolePreview from "../assets/projects/preprole-preview-1672.webp";
+import preprolePreview960 from "../assets/projects/preprole-preview-960.webp";
+import sentinelPreview from "../assets/projects/sentinel-preview-1672.webp";
+import sentinelPreview960 from "../assets/projects/sentinel-preview-960.webp";
+
 export type SocialIconName = "resume" | "github" | "linkedin" | "x" | "email";
 
 export interface SocialLink {
@@ -21,7 +28,11 @@ export interface ProjectAction {
 
 export interface ProjectMedia {
   src: string;
+  srcSet?: string;
+  sizes?: string;
   alt: string;
+  width: number;
+  height: number;
   objectFit?: "cover" | "contain";
   objectPosition?: string;
 }
@@ -69,8 +80,16 @@ export interface Technology {
   brandColor?: string;
 }
 
-// A real Resume item can be inserted first once a valid file or URL is available.
+const projectPreviewSizes =
+  "(max-width: 639px) calc(100vw - 40px), (max-width: 767px) calc(100vw - 64px), (max-width: 1023px) calc((100vw - 64px - 1.35rem) / 2), (max-width: 1199px) calc((100vw - 96px - 1.35rem) / 2), (max-width: 1279px) calc((100vw - 96px - 2.7rem) / 3), 375px";
+
 export const socialLinks: SocialLink[] = [
+  {
+    label: "Resume",
+    href: "https://drive.google.com/file/d/1f89FRbq-PSpkwBNlixifQbkNn7qXzy-X/view?usp=drivesdk",
+    icon: "resume",
+    external: true,
+  },
   {
     label: "GitHub",
     href: "https://github.com/pulkitdotio",
@@ -100,6 +119,14 @@ export const socialLinks: SocialLink[] = [
 export const projects: Project[] = [
   {
     title: "Sentinel",
+    media: {
+      src: sentinelPreview,
+      srcSet: `${sentinelPreview960} 960w, ${sentinelPreview} 1672w`,
+      sizes: projectPreviewSizes,
+      alt: "Sentinel API monitoring interface preview",
+      width: 1672,
+      height: 941,
+    },
     description:
       "Distributed API monitoring platform with multi-region health checks, automated incident detection, real-time dashboard updates, and latency analytics.",
     engineeringHighlight:
@@ -127,6 +154,14 @@ export const projects: Project[] = [
   },
   {
     title: "PrepRole AI",
+    media: {
+      src: preprolePreview,
+      srcSet: `${preprolePreview960} 960w, ${preprolePreview} 1672w`,
+      sizes: projectPreviewSizes,
+      alt: "PrepRole AI interview preparation dashboard preview",
+      width: 1672,
+      height: 941,
+    },
     description:
       "AI-powered interview preparation platform that compares a candidate profile with a target role to generate personalized questions, skill-gap insights, preparation guidance, and tailored resume support.",
     technologies: [
@@ -151,6 +186,14 @@ export const projects: Project[] = [
   },
   {
     title: "ledger-api",
+    media: {
+      src: ledgerPreview,
+      srcSet: `${ledgerPreview960} 960w, ${ledgerPreview} 1672w`,
+      sizes: projectPreviewSizes,
+      alt: "ledger-api backend ledger system preview",
+      width: 1672,
+      height: 941,
+    },
     description:
       "Backend financial ledger demonstrating immutable double-entry records, atomic transfers, idempotent requests, and JWT-based authentication.",
     technologies: [

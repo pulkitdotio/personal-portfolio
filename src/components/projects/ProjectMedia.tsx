@@ -9,9 +9,8 @@ type ProjectMediaFrameProps = {
 export function ProjectMediaFrame({ title, media }: ProjectMediaFrameProps) {
   if (!media) {
     return (
-      <div className="project-media project-media--placeholder" role="img" aria-label={`${title} project preview placeholder`}>
-        <span aria-hidden="true">Project preview</span>
-        <small aria-hidden="true">{title}</small>
+      <div className="project-media project-media--placeholder" role="img" aria-label={`${title} preview unavailable`}>
+        <span aria-hidden="true">Preview unavailable</span>
       </div>
     );
   }
@@ -25,7 +24,11 @@ export function ProjectMediaFrame({ title, media }: ProjectMediaFrameProps) {
     <div className="project-media">
       <img
         src={media.src}
+        srcSet={media.srcSet}
+        sizes={media.sizes}
         alt={media.alt}
+        width={media.width}
+        height={media.height}
         loading="lazy"
         decoding="async"
         style={mediaStyle}

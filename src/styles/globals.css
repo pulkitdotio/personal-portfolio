@@ -480,7 +480,7 @@ main {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--project-grid-gap);
-  align-items: stretch;
+  align-items: start;
 }
 
 .project-card {
@@ -503,7 +503,7 @@ main {
   position: relative;
   display: grid;
   min-width: 0;
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 16 / 9;
   overflow: hidden;
   border-bottom: 1px solid var(--color-line);
   background: #050505;
@@ -528,11 +528,6 @@ main {
   font-size: 0.72rem;
   font-weight: 540;
   letter-spacing: 0.01em;
-}
-
-.project-media--placeholder small {
-  color: #5f5f68;
-  font-size: 0.62rem;
 }
 
 .project-content {
