@@ -1,27 +1,18 @@
 import { ArrowUp } from "lucide-react";
-import { motion, useReducedMotion } from "motion/react";
 import feather from "../../assets/identity/feather.jpg";
 import { socialLinks } from "../../data/portfolio";
-import { revealUp } from "../../lib/motion";
 import { Container } from "./Container";
 
 const footerLinkOrder = ["GitHub", "LinkedIn", "Twitter", "Email"] as const;
 
 export function SiteFooter() {
-  const shouldReduceMotion = useReducedMotion();
   const currentYear = new Date().getFullYear();
 
   return (
     <Container as="footer" className="site-footer">
-      <motion.div
-        className="footer-inner"
-        initial={shouldReduceMotion ? "visible" : "hidden"}
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.5 }}
-        variants={revealUp}
-      >
+      <div className="footer-inner">
         <div className="footer-identity">
-          <img src={feather} alt="" width="30" height="30" aria-hidden="true" />
+          <img src={feather} alt="" width="26" height="26" aria-hidden="true" />
           <div>
             <p className="footer-name">Pulkit Sharma</p>
             <p className="footer-signature">making things. understanding things.</p>
@@ -57,7 +48,7 @@ export function SiteFooter() {
             <ArrowUp aria-hidden="true" />
           </a>
         </div>
-      </motion.div>
+      </div>
     </Container>
   );
 }
