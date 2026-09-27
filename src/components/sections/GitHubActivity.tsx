@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
-import { ArrowUpRight } from "lucide-react";
+import ArrowUpRight from "lucide-react/dist/esm/icons/arrow-up-right.mjs";
 import { motion, useReducedMotion } from "motion/react";
 import {
   reducedGroup,

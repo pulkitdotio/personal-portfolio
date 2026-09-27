@@ -1,7 +1,8 @@
-import { ArrowUpRight, Globe2 } from "lucide-react";
+import ArrowUpRight from "lucide-react/dist/esm/icons/arrow-up-right.mjs";
+import Globe2 from "lucide-react/dist/esm/icons/globe-2.mjs";
 import { motion, type Variants } from "motion/react";
-import { siGithub } from "simple-icons";
 import type { Project } from "../../data/portfolio";
+import { githubIconPath } from "../../data/simpleIconPaths";
 import { sectionViewport } from "../../lib/motion";
 import { TechTag } from "../ui/TechTag";
 import { ProjectMediaFrame } from "./ProjectMedia";
@@ -14,7 +15,7 @@ type ProjectCardProps = {
 function GitHubMark() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d={siGithub.path} fill="currentColor" />
+      <path d={githubIconPath} fill="currentColor" />
     </svg>
   );
 }

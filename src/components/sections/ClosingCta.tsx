@@ -1,4 +1,4 @@
-import { Mail } from "lucide-react";
+import Mail from "lucide-react/dist/esm/icons/mail.mjs";
 import { motion, useReducedMotion } from "motion/react";
 import {
   reducedGroup,

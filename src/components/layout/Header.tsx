@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { Menu, X } from "lucide-react";
+import Menu from "lucide-react/dist/esm/icons/menu.mjs";
+import X from "lucide-react/dist/esm/icons/x.mjs";
 import feather from "../../assets/identity/feather.jpg";
 import { navigationItems } from "../../data/navigation";
 import { Container } from "./Container";

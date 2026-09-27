@@ -1,4 +1,4 @@
-import { ArrowUp } from "lucide-react";
+import ArrowUp from "lucide-react/dist/esm/icons/arrow-up.mjs";
 import feather from "../../assets/identity/feather.jpg";
 import { socialLinks } from "../../data/portfolio";
 import { Container } from "./Container";
