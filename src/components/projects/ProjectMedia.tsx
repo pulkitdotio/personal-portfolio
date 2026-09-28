@@ -9,7 +9,11 @@ type ProjectMediaFrameProps = {
 export function ProjectMediaFrame({ title, media }: ProjectMediaFrameProps) {
   if (!media) {
     return (
-      <div className="project-media project-media--placeholder" role="img" aria-label={`${title} preview unavailable`}>
+      <div
+        className="project-media project-media--placeholder"
+        role="img"
+        aria-label={`${title} preview unavailable`}
+      >
         <span aria-hidden="true">Preview unavailable</span>
       </div>
     );
