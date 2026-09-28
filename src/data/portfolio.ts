@@ -1,3 +1,6 @@
+import ledgerPreview480 from "../assets/projects/ledger-preview-480.webp";
+import preprolePreview480 from "../assets/projects/preprole-preview-480.webp";
+import sentinelPreview480 from "../assets/projects/sentinel-preview-480.webp";
 import ledgerPreview from "../assets/projects/ledger-preview-1672.webp";
 import ledgerPreview960 from "../assets/projects/ledger-preview-960.webp";
 import preprolePreview from "../assets/projects/preprole-preview-1672.webp";
@@ -38,6 +41,9 @@ export interface ProjectMedia {
 }
 
 export interface Project {
+  featured?: boolean;
+  category: string;
+  accent: string;
   title: string;
   description: string;
   technologies: ProjectTechnology[];
@@ -81,7 +87,7 @@ export interface Technology {
 }
 
 const projectPreviewSizes =
-  "(max-width: 639px) calc(100vw - 40px), (max-width: 767px) calc(100vw - 64px), (max-width: 1023px) calc((100vw - 64px - 1.35rem) / 2), (max-width: 1199px) calc((100vw - 96px - 1.35rem) / 2), (max-width: 1279px) calc((100vw - 96px - 2.7rem) / 3), 375px";
+  "(max-width: 767px) calc(100vw - 64px), (max-width: 1199px) 50vw, 620px";
 
 export const socialLinks: SocialLink[] = [
   {
@@ -119,9 +125,12 @@ export const socialLinks: SocialLink[] = [
 export const projects: Project[] = [
   {
     title: "Sentinel",
+    featured: true,
+    category: "OBSERVABILITY / FULL STACK",
+    accent: "#69a88e",
     media: {
       src: sentinelPreview,
-      srcSet: `${sentinelPreview960} 960w, ${sentinelPreview} 1672w`,
+      srcSet: `${sentinelPreview480} 480w, ${sentinelPreview960} 960w, ${sentinelPreview} 1672w`,
       sizes: projectPreviewSizes,
       alt: "Sentinel API monitoring interface preview",
       width: 1672,
@@ -154,9 +163,11 @@ export const projects: Project[] = [
   },
   {
     title: "PrepRole AI",
+    category: "AI / FULL STACK",
+    accent: "#8d93cb",
     media: {
       src: preprolePreview,
-      srcSet: `${preprolePreview960} 960w, ${preprolePreview} 1672w`,
+      srcSet: `${preprolePreview480} 480w, ${preprolePreview960} 960w, ${preprolePreview} 1672w`,
       sizes: projectPreviewSizes,
       alt: "PrepRole AI interview preparation dashboard preview",
       width: 1672,
@@ -186,9 +197,11 @@ export const projects: Project[] = [
   },
   {
     title: "ledger-api",
+    category: "BACKEND / FINTECH",
+    accent: "#82a7b4",
     media: {
       src: ledgerPreview,
-      srcSet: `${ledgerPreview960} 960w, ${ledgerPreview} 1672w`,
+      srcSet: `${ledgerPreview480} 480w, ${ledgerPreview960} 960w, ${ledgerPreview} 1672w`,
       sizes: projectPreviewSizes,
       alt: "ledger-api backend ledger system preview",
       width: 1672,
@@ -241,4 +254,44 @@ export const technologies: Technology[] = [
   { name: "Postman", icon: "postman", brandColor: "#ff6c37" },
   { name: "VS Code", icon: "vscode", brandColor: "#007acc" },
   { name: "Vercel", icon: "vercel", brandColor: "#f5f5f5" },
+];
+export const heroRoles = ["Full Stack Developer", "AI/ML Enthusiast"] as const;
+export const technologyGroups: {
+  title: string;
+  icons: TechnologyIconName[];
+}[] = [
+  {
+    title: "Frontend",
+    icons: [
+      "typescript",
+      "javascript",
+      "html",
+      "css",
+      "react",
+      "nextjs",
+      "tailwind",
+      "shadcn",
+    ],
+  },
+  {
+    title: "Backend & Data",
+    icons: [
+      "nodejs",
+      "express",
+      "rest-api",
+      "java",
+      "postgresql",
+      "mongodb",
+      "redis",
+      "supabase",
+    ],
+  },
+  {
+    title: "AI/ML",
+    icons: ["python", "tensorflow", "pandas", "scikit-learn"],
+  },
+  {
+    title: "Tools & Workflow",
+    icons: ["git", "github", "docker", "postman", "vscode", "vercel"],
+  },
 ];
