@@ -1,53 +1,20 @@
 import ArrowUp from "lucide-react/dist/esm/icons/arrow-up.mjs";
-import feather from "../../assets/identity/feather.jpg";
-import { socialLinks } from "../../data/portfolio";
+import feather from "../../assets/identity/feather.webp";
 import { Container } from "./Container";
-
-const footerLinkOrder = ["GitHub", "LinkedIn", "Twitter", "Email"] as const;
-
 export function SiteFooter() {
-  const currentYear = new Date().getFullYear();
-
   return (
     <Container as="footer" className="site-footer">
       <div className="footer-inner">
         <div className="footer-identity">
-          <img src={feather} alt="" width="26" height="26" aria-hidden="true" />
-          <div>
-            <p className="footer-name">Pulkit Sharma</p>
-            <p className="footer-signature">making things. understanding things.</p>
-          </div>
+          <img src={feather} alt="" width="26" height="26" />
+          <span>Pulkit Sharma</span>
         </div>
-
-        <nav className="footer-links" aria-label="Social links">
-          {footerLinkOrder.map((label) => {
-            const link = socialLinks.find((item) => item.label === label);
-
-            if (!link) {
-              return null;
-            }
-
-            return (
-              <a
-                key={label}
-                href={link.href}
-                target={link.external ? "_blank" : undefined}
-                rel={link.external ? "noreferrer noopener" : undefined}
-                aria-label={link.external ? `${label} (opens in a new tab)` : "Email Pulkit Sharma"}
-              >
-                {label}
-              </a>
-            );
-          })}
-        </nav>
-
-        <div className="footer-meta">
-          <p>© {currentYear} Pulkit Sharma</p>
-          <a className="back-to-top" href="#top">
-            Back to top
-            <ArrowUp aria-hidden="true" />
-          </a>
-        </div>
+        <span className="footer-copyright">
+          &copy; {new Date().getFullYear()} Pulkit Sharma
+        </span>
+        <a className="back-to-top" href="#top">
+          Back to top <ArrowUp aria-hidden="true" />
+        </a>
       </div>
     </Container>
   );
