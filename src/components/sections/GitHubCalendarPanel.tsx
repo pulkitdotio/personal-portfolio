@@ -5,7 +5,7 @@ import "react-github-calendar/tooltips.css";
 const GITHUB_USERNAME = "pulkitdotio";
 
 const contributionTheme = {
-  dark: ["#151515", "#0e4429", "#006d32", "#26a641", "#39d353"],
+  dark: ["#202020", "#0e4429", "#006d32", "#26a641", "#39d353"],
 };
 
 function formatContributionLabel(activity: { date: string; count: number }) {
@@ -15,7 +15,8 @@ function formatContributionLabel(activity: { date: string; count: number }) {
     year: "numeric",
     timeZone: "UTC",
   }).format(new Date(`${activity.date}T00:00:00Z`));
-  const contributionLabel = activity.count === 1 ? "contribution" : "contributions";
+  const contributionLabel =
+    activity.count === 1 ? "contribution" : "contributions";
 
   return `${activity.count} ${contributionLabel} on ${date}`;
 }
@@ -43,6 +44,7 @@ export function GitHubCalendarPanel({ year }: GitHubCalendarPanelProps) {
       errorMessage="GitHub activity couldn't be loaded right now."
       renderBlock={(block, activity) =>
         cloneElement(block, {
+          role: "img",
           "aria-label": formatContributionLabel(activity),
         })
       }

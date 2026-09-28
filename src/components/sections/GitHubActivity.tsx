@@ -1,105 +1,120 @@
-import { lazy, Suspense, useEffect, useRef, useState } from "react";
-import ArrowUpRight from "lucide-react/dist/esm/icons/arrow-up-right.mjs";
-import { motion, useReducedMotion } from "motion/react";
 import {
-  reducedGroup,
-  reducedReveal,
-  revealGroup,
-  sectionReveal,
-  sectionViewport,
-} from "../../lib/motion";
+  Component,
+  lazy,
+  Suspense,
+  useEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
+import ArrowUpRight from "lucide-react/dist/esm/icons/arrow-up-right.mjs";
 import { Container } from "../layout/Container";
-
-const GITHUB_USERNAME = "pulkitdotio";
-const GITHUB_PROFILE_URL = `https://github.com/${GITHUB_USERNAME}`;
-
+import { Reveal } from "../motion/Reveal";
+import { SectionHeading } from "../ui/SectionHeading";
 const GitHubCalendarPanel = lazy(() =>
   import("./GitHubCalendarPanel").then((module) => ({
     default: module.GitHubCalendarPanel,
   })),
 );
-
+function CalendarPlaceholder() {
+  return (
+    <div className="github-calendar-placeholder" role="status">
+      <div className="calendar-skeleton" aria-hidden="true">
+        {Array.from({ length: 182 }, (_, index) => (
+          <span key={index} />
+        ))}
+      </div>
+      <span>Loading contributions...</span>
+    </div>
+  );
+}
+class CalendarBoundary extends Component<
+  { children: ReactNode },
+  { failed: boolean }
+> {
+  state = { failed: false };
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+  render() {
+    return this.state.failed ? (
+      <p className="calendar-error">
+        GitHub activity could not be loaded right now.
+      </p>
+    ) : (
+      this.props.children
+    );
+  }
+}
 export function GitHubActivity() {
-  const shouldReduceMotion = useReducedMotion();
-  const itemVariants = shouldReduceMotion ? reducedReveal : sectionReveal;
-  const currentYear = new Date().getFullYear();
-  const calendarRef = useRef<HTMLDivElement>(null);
-  const [shouldLoadCalendar, setShouldLoadCalendar] = useState(false);
-
+  const year = new Date().getFullYear();
+  const ref = useRef<HTMLDivElement>(null);
+  const [load, setLoad] = useState(false);
   useEffect(() => {
-    const calendarElement = calendarRef.current;
-
-    if (!calendarElement || typeof IntersectionObserver === "undefined") {
-      setShouldLoadCalendar(true);
+    if (!ref.current || typeof IntersectionObserver === "undefined") {
+      setLoad(true);
       return;
     }
-
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setShouldLoadCalendar(true);
+          setLoad(true);
           observer.disconnect();
         }
       },
-      { rootMargin: "400px 0px" },
+      { rootMargin: "400px" },
     );
-
-    observer.observe(calendarElement);
+    observer.observe(ref.current);
     return () => observer.disconnect();
   }, []);
-
   return (
     <Container
       as="section"
       id="github"
-      className="github-section"
+      className="section github-section"
       aria-labelledby="github-title"
     >
-      <motion.div
-        className="github-content"
-        initial="hidden"
-        whileInView="visible"
-        viewport={sectionViewport}
-        variants={shouldReduceMotion ? reducedGroup : revealGroup}
-      >
-        <motion.div className="github-heading" variants={itemVariants}>
-          <h2 id="github-title">GitHub Activity</h2>
-        </motion.div>
-
-        <motion.div className="github-activity-body" variants={itemVariants}>
-          <div className="github-calendar-viewport">
-            <div
-              ref={calendarRef}
-              className="github-calendar-frame"
-              aria-label={`${currentYear} GitHub contributions`}
-            >
-              {shouldLoadCalendar ? (
-                <Suspense fallback={<div className="github-calendar-placeholder" aria-hidden="true" />}>
-                  <GitHubCalendarPanel year={currentYear} />
-                </Suspense>
-              ) : (
-                <div className="github-calendar-placeholder" aria-hidden="true" />
-              )}
-            </div>
-          </div>
-
-          <div className="github-footer">
-            <span className="github-scroll-hint" aria-hidden="true">
-              Swipe to explore
-            </span>
-            <a
-              className="github-profile-link"
-              href={GITHUB_PROFILE_URL}
-              target="_blank"
-              rel="noreferrer noopener"
-              aria-label="View Pulkit's GitHub profile (opens in a new tab)"
-            >
-              View GitHub
-              <ArrowUpRight aria-hidden="true" />
-            </a>
-          </div>
-        </motion.div>
-      </motion.div>
+      <SectionHeading title="GitHub Activity" id="github-title" />
+      <Reveal className="github-panel">
+        <div className="github-panel-top">
+          <a
+            className="github-handle"
+            href="https://github.com/pulkitdotio"
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            @pulkitdotio <ArrowUpRight aria-hidden="true" />
+          </a>
+          <span className="eyebrow">{year} contributions</span>
+        </div>
+        <div
+          ref={ref}
+          className="github-calendar-viewport"
+          tabIndex={0}
+          role="region"
+          aria-label="GitHub contribution calendar; scroll horizontally on small screens"
+        >
+          <CalendarBoundary>
+            {load ? (
+              <Suspense fallback={<CalendarPlaceholder />}>
+                <GitHubCalendarPanel year={year} />
+              </Suspense>
+            ) : (
+              <CalendarPlaceholder />
+            )}
+          </CalendarBoundary>
+        </div>
+        <div className="github-footer">
+          <a
+            className="text-link"
+            href="https://github.com/pulkitdotio"
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            Explore GitHub <ArrowUpRight aria-hidden="true" />
+          </a>
+        </div>
+      </Reveal>
     </Container>
   );
 }
