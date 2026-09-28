@@ -19,14 +19,21 @@ function TechnologyIcon({ icon }: Pick<Technology, "icon">) {
 
   if (brandIconPath) {
     return (
-      <svg className="technology-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <svg
+        className="technology-icon"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+        focusable="false"
+      >
         <path d={brandIconPath} fill="currentColor" />
       </svg>
     );
   }
 
   const UtilityIcon = utilityIcons[icon];
-  return UtilityIcon ? <UtilityIcon className="technology-icon" aria-hidden="true" /> : null;
+  return UtilityIcon ? (
+    <UtilityIcon className="technology-icon" aria-hidden="true" />
+  ) : null;
 }
 
 export function TechnologyChip({ technology }: TechnologyChipProps) {
