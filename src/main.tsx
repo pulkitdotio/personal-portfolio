@@ -1,13 +1,14 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { MotionConfig } from "motion/react";
+import { MotionPreferences } from "./components/motion/MotionPreferences";
+import "./styles/fonts.css";
 import App from "./App";
 import "./styles/globals.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <MotionConfig reducedMotion="user">
+    <MotionPreferences>
       <App />
-    </MotionConfig>
+    </MotionPreferences>
   </StrictMode>,
 );
