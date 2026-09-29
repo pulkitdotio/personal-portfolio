@@ -1,4 +1,4 @@
-﻿@import "tailwindcss";
+@import "tailwindcss";
 
 @theme {
   --color-canvas: #080808;
@@ -1313,7 +1313,7 @@ html.lenis {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: clamp(28px, 9vw, 170px);
+  font-size: clamp(23px, 7.4vw, 140px);
   line-height: 1.04;
   letter-spacing: -0.035em;
   color: #e6e6e6;
@@ -1372,7 +1372,7 @@ html.lenis {
     align-items: center;
   }
   .wordmark-fallback {
-    font-size: 18vw;
+    font-size: 15vw;
   }
   .hero-content .hero-bottom {
     bottom: 9%;

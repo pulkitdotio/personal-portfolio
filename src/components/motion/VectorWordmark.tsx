@@ -289,9 +289,9 @@ function buildAtlas(
     ),
   );
   const px = Math.min(
-    (width * 0.94) / (measureWidth / 100 + 0.24),
-    (height * 0.85) / (lines.length * 1.04),
-    (Number.parseFloat(String(font.fontSize || 1000)) * width) / 1200,
+    (width * 0.77) / (measureWidth / 100 + 0.24),
+    (height * 0.70) / (lines.length * 1.04),
+    ((Number.parseFloat(String(font.fontSize || 1000)) * 0.82) * width) / 1200,
   );
   const ratio = Math.min(dpr, MAX_TEX / Math.max(width, height));
   const fpx = px * ratio;
