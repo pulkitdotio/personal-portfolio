@@ -14,12 +14,12 @@ import VectorWordmark from "../motion/VectorWordmark";
 import { RotatingRole } from "./RotatingRole";
 
 const wordmarkFont = {
-  fontFamily: '"Train One", sans-serif',
+  fontFamily: '"Protest Guerrilla", sans-serif',
   fontWeight: 400,
   letterSpacing: "-0.035em",
 };
 const mobileLines = ["PULKIT", "SHARMA"];
-const handles = { size: 54, spread: 42, labels: true };
+const handles = { size: 80, spread: 42, labels: true };
 
 export function Hero() {
   const { enabled, pageVisible } = useMotionPreferences();
