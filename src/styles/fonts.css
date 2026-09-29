@@ -1,0 +1,34 @@
+@font-face {
+  font-family: "Protest Guerrilla";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url("@fontsource/protest-guerrilla/files/protest-guerrilla-latin-400-normal.woff2")
+    format("woff2");
+}
+
+@font-face {
+  font-family: "Manrope Variable";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 200 800;
+  src: url("@fontsource-variable/manrope/files/manrope-latin-wght-normal.woff2")
+    format("woff2-variations");
+}
+@font-face {
+  font-family: "Geist Mono Variable";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("@fontsource-variable/geist-mono/files/geist-mono-latin-wght-normal.woff2")
+    format("woff2-variations");
+}
+
+@font-face {
+  font-family: "Syne Variable";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400 800;
+  src: url("@fontsource-variable/syne/files/syne-latin-wght-normal.woff2")
+    format("woff2-variations");
+}

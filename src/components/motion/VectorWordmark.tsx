@@ -179,7 +179,8 @@ void main() {
     vec2 sharp = blurRG(safeUv, b * 0.1);
 
     float d = length((vUv - uPtr) / vec2(1.0, aspect));
-    float k = 1.0 - pow(smoothstep(0.0, max(uReach, 1e-4), d), 3.0);
+    // Retain a little more solid lettering: 10% less shadow/reveal intensity.
+    float k = 0.9 * (1.0 - pow(smoothstep(0.0, max(uReach, 1e-4), d), 3.0));
 
     float mask = mix(soft.r, sharp.g, k) * inside;
     vec3 fill = mix(uShade, uText, smoothstep(0.0, 1.0, E.y));
@@ -545,7 +546,21 @@ export default function VectorWordmark({
         const label = labelRefs.current[i];
         if (label) {
           const labelOffset = (L.handles?.size ?? 18) / 2 + 6;
-          label.style.transform = `translate(${(v.x / aspect) * width + labelOffset}px, ${(1 - v.y) * height + labelOffset}px)`;
+          const labelX = clamp(
+            (v.x / aspect) * width + labelOffset,
+            4,
+            Math.max(4, width - 68),
+          );
+          const labelY = clamp(
+            (1 - v.y) * height + labelOffset,
+            4,
+            Math.max(4, height - 20),
+          );
+          label.style.visibility =
+            v.x < 0 || v.x > aspect || v.y < 0 || v.y > 1
+              ? "hidden"
+              : "visible";
+          label.style.transform = `translate(${labelX}px, ${labelY}px)`;
           label.textContent = `${Math.round((v.x / aspect) * 100)}, ${Math.round(v.y * 100)}`;
         }
       });
@@ -560,7 +575,11 @@ export default function VectorWordmark({
       gl.uniform2f(uniforms.uRes, width, height);
       gl.uniform2f(uniforms.uAtlas, atlasWidth, atlasHeight);
       gl.uniform2f(uniforms.uPtr, eased.x, eased.y);
-      gl.uniform1f(uniforms.uReach, Math.min(L.reach, width * 0.27) / width);
+      // Radius scales by sqrt(1.1) for 10% more reveal area, including mobile.
+      gl.uniform1f(
+        uniforms.uReach,
+        (Math.min(L.reach, width * 0.27) * Math.sqrt(1.1)) / width,
+      );
       gl.uniform3f(uniforms.uText, tc[0], tc[1], tc[2]);
       gl.uniform3f(uniforms.uShade, sc[0], sc[1], sc[2]);
       gl.uniform4f(uniforms.uAccent, ac[0], ac[1], ac[2], ac[3]);

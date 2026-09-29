@@ -47,6 +47,7 @@ build/
 
 .vercel/
 coverage/
+.cache/
 
 # ============================================
 # OS files
