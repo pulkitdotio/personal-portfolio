@@ -257,8 +257,6 @@ ul {
   margin-top: 40px;
   font-size: 12px;
 }
-/* React Bits Magnet Lines: local, responsive, and pointer driven. */
-
 .hero-bottom {
   display: flex;
   justify-content: space-between;
@@ -293,11 +291,6 @@ ul {
 .role-line--static .role-window {
   width: auto;
   height: auto;
-}
-.hero-description > p {
-  color: var(--color-muted);
-  font-size: 14px;
-  line-height: 1.85;
 }
 .hero-actions {
   display: flex;
@@ -614,10 +607,6 @@ ul {
   gap: 12px;
   margin-bottom: 19px;
 }
-.stack-group-heading > span {
-  color: var(--color-dim);
-  font: 9px var(--font-mono);
-}
 .stack-group h3 {
   font-size: 17px;
   font-weight: 600;
@@ -707,10 +696,6 @@ ul {
   padding-top: 12px;
   gap: 20px;
 }
-.github-footer p {
-  font-size: 11px;
-  color: var(--color-dim);
-}
 .github-calendar-placeholder {
   min-height: 174px;
   display: flex;
@@ -755,9 +740,6 @@ ul {
   font-weight: 550;
   line-height: 1.12;
   letter-spacing: -0.05em;
-}
-.closing-content h2 span {
-  color: #989898;
 }
 .closing-bottom {
   display: flex;
@@ -842,8 +824,6 @@ ul {
   width: 12px;
   height: 12px;
 }
-@media (min-width: 1600px) {
-}
 @media (max-width: 1000px) {
   .container {
     width: calc(100% - 64px);
@@ -909,10 +889,6 @@ ul {
   .role-line--static .role-window {
     font-size: 12px;
     height: auto;
-  }
-  .hero-description > p {
-    font-size: 13px;
-    line-height: 1.9;
   }
   .hero-actions {
     padding-top: 15px;
@@ -1015,7 +991,6 @@ ul {
   .github-footer {
     gap: 8px;
   }
-  .github-footer p,
   .github-footer a {
     font-size: 9px;
   }

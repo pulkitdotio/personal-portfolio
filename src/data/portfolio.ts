@@ -8,9 +8,9 @@ import preprolePreview960 from "../assets/projects/preprole-preview-960.webp";
 import sentinelPreview from "../assets/projects/sentinel-preview-1672.webp";
 import sentinelPreview960 from "../assets/projects/sentinel-preview-960.webp";
 
-export type SocialIconName = "resume" | "github" | "linkedin" | "x" | "email";
+type SocialIconName = "resume" | "github" | "linkedin" | "x" | "email";
 
-export interface SocialLink {
+interface SocialLink {
   label: string;
   href: string;
   icon: SocialIconName;
@@ -21,9 +21,9 @@ export interface ProjectTechnology {
   label: string;
 }
 
-export type ProjectActionKind = "github" | "live";
+type ProjectActionKind = "github" | "live";
 
-export interface ProjectAction {
+interface ProjectAction {
   label: "GitHub" | "Live";
   href: string;
   kind: ProjectActionKind;

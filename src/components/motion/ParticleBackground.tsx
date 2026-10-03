@@ -19,6 +19,7 @@ export function ParticleBackground() {
     const fine = window.matchMedia("(hover: hover) and (pointer: fine)");
     const active = enabled && pageVisible;
     const draw = (dt: number) => {
+      const interactive = active && fine.matches;
       time.current += dt;
       ctx.clearRect(0, 0, width, height);
       for (const p of particles.current) {
@@ -26,13 +27,15 @@ export function ParticleBackground() {
         p.x = (p.x + (dt * (1 + p.depth * 2)) / width) % 1;
         let x = p.x * width + Math.sin(time.current * 0.15 + p.phase) * 8;
         let y = p.y * height;
-        const dx = x - pointer.x,
-          dy = y - pointer.y;
-        const distance = Math.hypot(dx, dy);
-        if (active && fine.matches && distance < 120 && distance > 0) {
-          const force = (1 - distance / 120) * 12;
-          x += (dx / distance) * force;
-          y += (dy / distance) * force;
+        if (interactive) {
+          const dx = x - pointer.x,
+            dy = y - pointer.y;
+          const distance = Math.hypot(dx, dy);
+          if (distance < 120 && distance > 0) {
+            const force = (1 - distance / 120) * 12;
+            x += (dx / distance) * force;
+            y += (dy / distance) * force;
+          }
         }
         const center = Math.abs(x / width - 0.5) * 2;
         const alpha =
@@ -65,7 +68,7 @@ export function ParticleBackground() {
     };
     const tick = (now: number) => {
       const dt = previous ? Math.min((now - previous) / 1000, 0.05) : 0;
-      // Slow drift needs only 30 draws per second, leaving room for video decoding.
+      // Slow drift needs only 30 draws per second.
       if (!previous || now - previous >= 1000 / 30) {
         previous = now;
         draw(dt);

@@ -8,13 +8,17 @@ const contributionTheme = {
   dark: ["#202020", "#0e4429", "#006d32", "#26a641", "#39d353"],
 };
 
+const contributionDateFormatter = new Intl.DateTimeFormat("en", {
+  month: "long",
+  day: "numeric",
+  year: "numeric",
+  timeZone: "UTC",
+});
+
 function formatContributionLabel(activity: { date: string; count: number }) {
-  const date = new Intl.DateTimeFormat("en", {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-    timeZone: "UTC",
-  }).format(new Date(`${activity.date}T00:00:00Z`));
+  const date = contributionDateFormatter.format(
+    new Date(`${activity.date}T00:00:00Z`),
+  );
   const contributionLabel =
     activity.count === 1 ? "contribution" : "contributions";
 

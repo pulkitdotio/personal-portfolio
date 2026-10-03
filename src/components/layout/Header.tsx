@@ -17,17 +17,20 @@ export function Header() {
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
+    const sections = navigationItems
+      .map((item) => document.querySelector(item.href))
+      .filter((section): section is Element => Boolean(section));
     const update = () => {
-      const sections = navigationItems
-        .map((item) => document.querySelector(item.href))
-        .filter((section): section is Element => Boolean(section))
-        .sort(
-          (a, b) =>
-            a.getBoundingClientRect().top - b.getBoundingClientRect().top,
-        );
-      const current = sections
-        .filter((section) => section.getBoundingClientRect().top <= 180)
-        .at(-1);
+      let current: Element | undefined;
+      let currentTop = -Infinity;
+      for (const section of sections) {
+        const top = section.getBoundingClientRect().top;
+        // Equal positions keep the last section, matching the previous stable sort.
+        if (top <= 180 && top >= currentTop) {
+          current = section;
+          currentTop = top;
+        }
+      }
       setActive(current ? "#" + current.id : "");
     };
     let frame = 0;

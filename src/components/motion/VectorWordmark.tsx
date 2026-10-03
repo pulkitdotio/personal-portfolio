@@ -247,7 +247,7 @@ function compile(gl: WebGLRenderingContext) {
 }
 
 type HandleGroup = { size: number; spread: number; labels: boolean };
-export interface VectorWordmarkProps {
+interface VectorWordmarkProps {
   text?: string;
   mobileLines?: string[];
   font?: CSSProperties;
@@ -355,9 +355,9 @@ export default function VectorWordmark({
     text,
     mobileLines,
     font,
-    textColor,
-    shade,
-    accent,
+    textColor: parseColor(textColor, [1, 1, 1, 1]),
+    shade: parseColor(shade, [0.5, 0.5, 0.5, 1]),
+    accent: parseColor(accent, [1, 1, 1, 0.5]),
     reach,
     speed,
     damping,
@@ -371,9 +371,9 @@ export default function VectorWordmark({
       text,
       mobileLines,
       font,
-      textColor,
-      shade,
-      accent,
+      textColor: parseColor(textColor, [1, 1, 1, 1]),
+      shade: parseColor(shade, [0.5, 0.5, 0.5, 1]),
+      accent: parseColor(accent, [1, 1, 1, 0.5]),
       reach,
       speed,
       damping,
@@ -564,9 +564,9 @@ export default function VectorWordmark({
           label.textContent = `${Math.round((v.x / aspect) * 100)}, ${Math.round(v.y * 100)}`;
         }
       });
-      const tc = parseColor(L.textColor, [1, 1, 1, 1]),
-        sc = parseColor(L.shade, [0.5, 0.5, 0.5, 1]),
-        ac = parseColor(L.accent, [1, 1, 1, 0.5]);
+      const tc = L.textColor,
+        sc = L.shade,
+        ac = L.accent;
       gl.viewport(0, 0, canvas.width, canvas.height);
       gl.useProgram(program);
       gl.activeTexture(gl.TEXTURE0);
