@@ -1,3 +1,8 @@
+import {
+  closeNavigation,
+  openNavigation,
+  toggleAnimations,
+} from "./navigation";
 import { expect, test, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { mkdir } from "node:fs/promises";
@@ -62,9 +67,7 @@ for (const width of [390, 768, 1440, 1920]) {
         fullPage: true,
       });
       // Freeze decorative motion for a stable contrast audit.
-      await page
-        .getByRole("button", { name: "Pause animations", exact: true })
-        .click();
+      await toggleAnimations(page, "Pause");
       const audit = await new AxeBuilder({ page })
         .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
         .analyze();
@@ -79,27 +82,31 @@ for (const width of [390, 768, 1440, 1920]) {
   );
 }
 
-test("roles rotate without moving the actions; pausing persists", async ({
+test("editorial copy and actions stay stable; pausing persists", async ({
   page,
 }) => {
   await mockCalendar(page);
   await page.goto("/");
-  const role = page.locator(".role-window");
-  await expect(role).toHaveText("Full Stack Developer");
-  await expect(page.locator(".hero-bottom")).toHaveCSS("transform", "none");
-  const before = await page.locator(".hero-actions").boundingBox();
-  await expect(role).toHaveText("AI/ML Enthusiast", { timeout: 6000 });
-  const after = await page.locator(".hero-actions").boundingBox();
-  expect(after?.y).toBe(before?.y);
-  await page
-    .getByRole("button", { name: "Pause animations", exact: true })
-    .click();
-  await expect(role).toHaveText("Full Stack Developer \u00b7 AI/ML Enthusiast");
+  const statement = page.locator(".hero-statement");
+  await expect(statement).toHaveText(
+    "I build products, scalable backends and AI-powered systems.",
+  );
+  const actions = page.locator(".hero-text-links");
+  const before = await actions.boundingBox();
+  await page.waitForTimeout(1000);
+  expect((await actions.boundingBox())?.y).toBe(before?.y);
+  await toggleAnimations(page, "Pause");
   await expect(page.locator(".vector-wordmark")).toHaveAttribute(
     "data-running",
     "false",
   );
+  await expect(page.locator(".wordmark-fallback")).toBeVisible();
+  await expect(page.locator(".hero-scroll")).toHaveCSS(
+    "animation-name",
+    "none",
+  );
   await page.reload();
+  await openNavigation(page);
   await expect(
     page.getByRole("button", { name: "Resume animations", exact: true }),
   ).toBeVisible();
@@ -136,9 +143,12 @@ test("system reduced motion disables recurring effects and wordmark interaction"
   });
   await page.goto("/");
   await expect(page.locator("html")).toHaveAttribute("data-motion", "off");
-  await expect(page.locator(".role-window")).toHaveText(
-    "Full Stack Developer \u00b7 AI/ML Enthusiast",
+  await expect(page.locator(".wordmark-fallback")).toBeVisible();
+  await expect(page.locator(".hero-scroll")).toHaveCSS(
+    "animation-name",
+    "none",
   );
+  await openNavigation(page);
   await expect(
     page.getByRole("button", {
       name: "Animations disabled by system preference",
@@ -156,14 +166,20 @@ test("mobile menu traps focus, closes with Escape, and navigates", async ({
   await page.goto("/");
   const open = page.getByRole("button", { name: "Open navigation menu" });
   await open.click();
-  const nav = page.getByRole("navigation", { name: "Mobile navigation" });
+  const nav = page.getByRole("navigation", { name: "Primary navigation" });
   await expect(nav.getByRole("link").first()).toBeFocused();
   await page.keyboard.press("Shift+Tab");
   await expect(
     page.getByRole("button", { name: "Close navigation menu" }),
   ).toBeFocused();
   await page.keyboard.press("Shift+Tab");
-  await expect(nav.getByRole("link").last()).toBeFocused();
+  await expect(
+    page.getByRole("button", { name: "Pause animations", exact: true }),
+  ).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(
+    page.getByRole("button", { name: "Close navigation menu" }),
+  ).toBeFocused();
   await page.keyboard.press("Escape");
   await expect(open).toBeFocused();
   await expect(nav).toHaveCount(0);
@@ -205,8 +221,8 @@ test("copy email succeeds, reports failure, and contact links remain valid", asy
   await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
   await expect(
     page
-      .locator(".hero-actions")
-      .getByRole("link", { name: "Resume", exact: true }),
+      .locator(".hero-socials")
+      .getByRole("link", { name: "R\u00e9sum\u00e9", exact: true }),
   ).toHaveAttribute("href", /drive.google.com/);
 });
 
@@ -230,11 +246,13 @@ test("project hover responds to a pointer and navigation indicates the current s
   await mockCalendar(page);
   await page.goto("/");
   await page.locator("#projects").scrollIntoViewIfNeeded();
+  await openNavigation(page);
   await expect(
     page
       .getByRole("navigation", { name: "Primary navigation" })
       .getByRole("link", { name: "Projects" }),
   ).toHaveAttribute("aria-current", "location");
+  await closeNavigation(page);
   const stage = page.locator(".project-stage").first();
   await expect(page.locator(".project-wrap").first()).toHaveCSS(
     "transform",
@@ -248,9 +266,7 @@ test("project hover responds to a pointer and navigation indicates the current s
     "opacity",
     "1",
   );
-  await page
-    .getByRole("button", { name: "Pause animations", exact: true })
-    .click();
+  await toggleAnimations(page, "Pause");
   await expect(page.locator(".project-highlight")).toHaveCount(0);
 });
 
@@ -307,16 +323,12 @@ test("wordmark and particles animate, pause, and stop in a hidden tab", async ({
   const lower = await frame();
   await page.waitForTimeout(200);
   expect(await frame()).not.toBe(lower);
-  await page
-    .getByRole("button", { name: "Pause animations", exact: true })
-    .click();
+  await toggleAnimations(page, "Pause");
   await expect(canvas).toHaveAttribute("data-running", "false");
   const paused = await frame();
   await page.waitForTimeout(200);
   expect(await frame()).toBe(paused);
-  await page
-    .getByRole("button", { name: "Resume animations", exact: true })
-    .click();
+  await toggleAnimations(page, "Resume");
   await page.evaluate(() => {
     Object.defineProperty(document, "hidden", {
       configurable: true,

@@ -1,3 +1,4 @@
+import { openNavigation, toggleAnimations } from "./navigation";
 import { expect, test } from "@playwright/test";
 
 test("wordmark responds to the pointer and stops when paused", async ({
@@ -8,22 +9,21 @@ test("wordmark responds to the pointer and stops when paused", async ({
   await expect(wordmark).toHaveAttribute("data-ready", "true");
   await expect(wordmark).toHaveAttribute("data-lines", "1");
   const label = wordmark.locator(".wordmark-coordinate").first();
-  await page.mouse.move(400, 350);
+  const box = (await wordmark.boundingBox())!;
+  await page.mouse.move(box.x + box.width * 0.25, box.y + box.height * 0.5);
   const before = await label.textContent();
-  await page.mouse.move(1050, 400, { steps: 10 });
+  await page.mouse.move(box.x + box.width * 0.75, box.y + box.height * 0.55, {
+    steps: 10,
+  });
   await expect.poll(() => label.textContent()).not.toBe(before);
-  await page
-    .getByRole("button", { name: "Pause animations", exact: true })
-    .click();
+  await toggleAnimations(page, "Pause");
   await expect(wordmark).toHaveAttribute("data-running", "false");
   await expect(wordmark.locator(".wordmark-fallback")).toBeVisible();
   const paused = await label.getAttribute("style");
   await page.mouse.move(500, 350);
   await page.waitForTimeout(200);
   expect(await label.getAttribute("style")).toBe(paused);
-  await page
-    .getByRole("button", { name: "Resume animations", exact: true })
-    .click();
+  await toggleAnimations(page, "Resume");
   await expect(wordmark).toHaveAttribute("data-running", "true");
 });
 
@@ -142,10 +142,9 @@ test("changing motion preferences preserves downstream position", async ({
   const top = () =>
     page.locator("#projects").evaluate((el) => el.getBoundingClientRect().top);
   const before = await top();
-  const toggle = await page.locator(".motion-toggle").boundingBox();
-  await page.mouse.click(toggle!.x + 22, toggle!.y + 22);
+  await toggleAnimations(page, "Pause");
   await expect.poll(top).toBeCloseTo(before, 0);
-  await page.mouse.click(toggle!.x + 22, toggle!.y + 22);
+  await toggleAnimations(page, "Resume");
   await expect.poll(top).toBeCloseTo(before, 0);
   await page.emulateMedia({ reducedMotion: "reduce" });
   await expect.poll(top).toBeCloseTo(before, 0);
@@ -155,6 +154,7 @@ test("anchors land below the header, history works, and the mobile menu locks wh
   page,
 }) => {
   await page.goto("/");
+  await openNavigation(page);
   await page
     .getByRole("navigation", { name: "Primary navigation" })
     .getByRole("link", { name: "About", exact: true })
@@ -165,7 +165,8 @@ test("anchors land below the header, history works, and the mobile menu locks wh
         .locator("#about")
         .evaluate((el) => Math.round(el.getBoundingClientRect().top)),
     )
-    .toBe(108);
+    .toBe(128);
+  await openNavigation(page);
   await page
     .getByRole("navigation", { name: "Primary navigation" })
     .getByRole("link", { name: "Projects", exact: true })
@@ -176,7 +177,7 @@ test("anchors land below the header, history works, and the mobile menu locks wh
         .locator("#projects")
         .evaluate((el) => Math.round(el.getBoundingClientRect().top)),
     )
-    .toBe(108);
+    .toBe(128);
   await page.goBack();
   await expect(page).toHaveURL(/#about$/);
   await expect
@@ -185,15 +186,16 @@ test("anchors land below the header, history works, and the mobile menu locks wh
         .locator("#about")
         .evaluate((el) => Math.round(el.getBoundingClientRect().top)),
     )
-    .toBe(108);
+    .toBe(128);
   await page.setViewportSize({ width: 390, height: 844 });
   await page.getByRole("button", { name: "Open navigation menu" }).click();
   const before = await page.evaluate(() => scrollY);
   await page.mouse.wheel(0, 700);
   await page.waitForTimeout(200);
   expect(await page.evaluate(() => scrollY)).toBe(before);
+  await openNavigation(page);
   await page
-    .getByRole("navigation", { name: "Mobile navigation" })
+    .getByRole("navigation", { name: "Primary navigation" })
     .getByRole("link", { name: "Projects", exact: true })
     .click();
   await expect

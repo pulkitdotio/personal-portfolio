@@ -6,12 +6,11 @@ import {
   useTransform,
 } from "motion/react";
 import ArrowDown from "lucide-react/dist/esm/icons/arrow-down.mjs";
+import ArrowRight from "lucide-react/dist/esm/icons/arrow-right.mjs";
 import ArrowUpRight from "lucide-react/dist/esm/icons/arrow-up-right.mjs";
 import { socialLinks } from "../../data/portfolio";
-import { Container } from "../layout/Container";
 import { useMotionPreferences } from "../motion/MotionPreferences";
 import VectorWordmark from "../motion/VectorWordmark";
-import { RotatingRole } from "./RotatingRole";
 
 const wordmarkFont = {
   fontFamily: '"Protest Guerrilla", sans-serif',
@@ -20,6 +19,9 @@ const wordmarkFont = {
 };
 const mobileLines = ["PULKIT", "SHARMA"];
 const handles = { size: 80, spread: 42, labels: true };
+const heroSocialLinks = ["email", "github", "x", "linkedin", "resume"].map(
+  (icon) => socialLinks.find((link) => link.icon === icon)!,
+);
 
 export function Hero() {
   const { enabled, pageVisible } = useMotionPreferences();
@@ -37,7 +39,6 @@ export function Hero() {
     [1, 1, 0, 0],
   );
   const y = useTransform(scrollYProgress, [0, 0.78], [0, -24]);
-  const resume = socialLinks.find((link) => link.icon === "resume")!;
 
   useMotionValueEvent(opacity, "change", (value) => {
     if (!content.current) return;
@@ -110,34 +111,71 @@ export function Hero() {
           <h1 id="hero-title" className="sr-only">
             Pulkit Sharma
           </h1>
-          <div className="hero-wordmark">
-            <VectorWordmark
-              text="PULKIT SHARMA"
-              mobileLines={mobileLines}
-              font={wordmarkFont}
-              handles={handles}
-              enabled={enabled}
-              visible={pageVisible && !faded}
-            />
+          <div className="hero-architecture" aria-hidden="true">
+            <div className="hero-plane" />
+            <div className="hero-plane-lower" />
+            <div className="hero-cross-rule" />
+            <div className="hero-diagonal" />
           </div>
-          <Container className="hero-bottom">
-            <div className="hero-description">
-              <RotatingRole />
+          <div className="hero-identity">
+            <div className="hero-wordmark">
+              <VectorWordmark
+                text="PULKIT SHARMA"
+                mobileLines={mobileLines}
+                font={wordmarkFont}
+                handles={handles}
+                enabled={enabled}
+                visible={pageVisible && !faded}
+              />
             </div>
-            <div className="hero-actions">
-              <a href="#projects" className="button button-primary">
-                View projects <ArrowDown aria-hidden="true" />
+            <p className="hero-tagline">
+              Building at the intersection of
+              <br />
+              product, backend and AI.
+            </p>
+            <nav className="hero-socials" aria-label="Social and contact links">
+              <ul>
+                {heroSocialLinks.map((link) => (
+                  <li key={link.icon}>
+                    <a
+                      href={link.href}
+                      target={link.external ? "_blank" : undefined}
+                      rel={link.external ? "noreferrer noopener" : undefined}
+                    >
+                      {link.icon === "resume" ? "Résumé" : link.label}
+                      <ArrowUpRight aria-hidden="true" />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </div>
+          <div className="hero-editorial">
+            <p className="hero-statement">
+              <span>I build products,</span> <span>scalable backends and</span>{" "}
+              <span>AI-powered systems.</span>
+            </p>
+            <p className="hero-availability">
+              <span className="availability-dot" aria-hidden="true" />
+              <span>Based in India</span>
+              <span className="availability-divider" aria-hidden="true">
+                /
+              </span>
+              <span>Open to opportunities</span>
+            </p>
+            <nav className="hero-text-links" aria-label="Explore the portfolio">
+              <a href="#projects">
+                View Projects <ArrowRight aria-hidden="true" />
               </a>
-              <a
-                href={resume.href}
-                className="button button-secondary"
-                target="_blank"
-                rel="noreferrer noopener"
-              >
-                Resume <ArrowUpRight aria-hidden="true" />
+              <a href="#about">
+                About Me <ArrowRight aria-hidden="true" />
               </a>
-            </div>
-          </Container>
+            </nav>
+          </div>
+          <a className="hero-scroll" href="#about">
+            <span>Scroll to explore</span>
+            <ArrowDown aria-hidden="true" />
+          </a>
         </motion.div>
       </div>
     </section>

@@ -4,6 +4,7 @@ import { MotionPreferences } from "./components/motion/MotionPreferences";
 import "./styles/fonts.css";
 import App from "./App";
 import "./styles/globals.css";
+import "./styles/hero.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

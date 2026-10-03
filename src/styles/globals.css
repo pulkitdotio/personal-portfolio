@@ -132,70 +132,6 @@ ul {
   border-width: 0;
 }
 
-.site-header {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  height: var(--header-height);
-  background: #080808eb;
-  border-bottom: 1px solid #dadada0b;
-}
-.header-inner {
-  display: flex;
-  align-items: center;
-  height: 100%;
-  gap: 30px;
-}
-.brand-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  min-height: 44px;
-  margin-right: auto;
-  font-size: 21px;
-  font-weight: 580;
-  letter-spacing: -0.9px;
-}
-.brand-link img {
-  width: 28px;
-  height: 28px;
-  border-radius: 5px;
-  mix-blend-mode: screen;
-}
-.brand-dot {
-  color: var(--color-accent);
-}
-.desktop-nav {
-  display: flex;
-  gap: 30px;
-  height: 100%;
-  align-items: center;
-}
-.desktop-nav a {
-  position: relative;
-  display: grid;
-  place-items: center;
-  height: 44px;
-  color: var(--color-muted);
-  font-size: 12px;
-  transition: color 0.2s;
-}
-.desktop-nav a:hover,
-.desktop-nav a[aria-current] {
-  color: var(--color-ink);
-}
-.nav-active-dot {
-  position: absolute;
-  width: 3px;
-  height: 3px;
-  border-radius: 50%;
-  background: var(--color-accent);
-  bottom: 1px;
-}
-.header-controls {
-  display: flex;
-  gap: 10px;
-}
 .icon-button {
   display: inline-flex;
   align-items: center;
@@ -219,83 +155,6 @@ ul {
 .icon-button svg {
   width: 15px;
   height: 15px;
-}
-.motion-toggle:disabled {
-  opacity: 0.6;
-}
-.menu-button {
-  display: none;
-}
-.reading-progress {
-  position: absolute;
-  height: 1px;
-  bottom: -1px;
-  left: 0;
-  width: 100%;
-  background: linear-gradient(90deg, #696969, #d1d1d1);
-  transform-origin: left;
-}
-.mobile-menu-shell {
-  position: fixed;
-  top: var(--header-height);
-  inset-inline: 0;
-  height: calc(100dvh - var(--header-height));
-  background: #121212;
-  padding: 30px 24px;
-  overflow-y: auto;
-}
-.mobile-nav a {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  padding: 22px 0;
-  border-bottom: 1px solid var(--color-line);
-  font-size: 30px;
-}
-.mobile-menu-caption {
-  color: var(--color-muted);
-  margin-top: 40px;
-  font-size: 12px;
-}
-.hero-bottom {
-  display: flex;
-  justify-content: space-between;
-  gap: 30px;
-  align-items: center;
-}
-.role-line {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 14px;
-  color: #dbdbdb;
-  font-size: 16px;
-}
-.role-dot {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: #bbbbbb;
-  box-shadow: 0 0 14px #bbbbbb55;
-  flex-shrink: 0;
-}
-.role-window {
-  position: relative;
-  overflow: hidden;
-  width: 230px;
-  height: 25px;
-}
-.role-window > span {
-  display: block;
-}
-.role-line--static .role-window {
-  width: auto;
-  height: auto;
-}
-.hero-actions {
-  display: flex;
-  gap: 10px;
-  padding-top: 15px;
 }
 .button {
   display: inline-flex;
@@ -828,9 +687,6 @@ ul {
   .container {
     width: calc(100% - 64px);
   }
-  .desktop-nav {
-    gap: 22px;
-  }
   .project-card--featured {
     grid-template-columns: 1.1fr 1fr;
   }
@@ -857,42 +713,6 @@ ul {
   }
   .container {
     width: calc(100% - 40px);
-  }
-  .header-inner {
-    gap: 15px;
-  }
-  .desktop-nav {
-    display: none;
-  }
-  .menu-button {
-    display: inline-flex;
-  }
-  .brand-link {
-    font-size: 20px;
-  }
-  .header-controls {
-    gap: 7px;
-  }
-
-  .hero-bottom {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-  }
-  .role-line {
-    font-size: 14px;
-    margin-bottom: 12px;
-  }
-  .role-window {
-    height: 23px;
-  }
-  .role-line--static .role-window {
-    font-size: 12px;
-    height: auto;
-  }
-  .hero-actions {
-    padding-top: 15px;
-    gap: 10px;
   }
   .button {
     min-height: 46px;
@@ -1235,135 +1055,6 @@ html[data-motion="off"] .connect-button:hover {
 .eyebrow {
   font: 11px var(--font-sans);
   color: var(--color-muted);
-}
-
-/* The wordmark and its fade share one sticky stage. The extra height is the
-   scroll timeline, not an empty content section. */
-html.lenis {
-  scroll-behavior: auto;
-}
-.hero-journey {
-  --stage-height: max(560px, calc(100svh - var(--header-height)));
-  position: relative;
-  height: var(--stage-height);
-  overflow-anchor: none;
-}
-.hero-journey[data-animated="true"] {
-  height: calc(var(--stage-height) * 2);
-}
-.hero-stage {
-  position: sticky;
-  top: var(--header-height);
-  height: var(--stage-height);
-}
-.hero-content {
-  position: relative;
-  height: 100%;
-}
-.hero-wordmark {
-  position: absolute;
-  inset: 10% 2.5% 23%;
-  max-width: 1800px;
-  margin-inline: auto;
-}
-.vector-wordmark {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
-.vector-wordmark canvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-}
-.vector-wordmark[data-ready="true"][data-enabled="true"] canvas {
-  opacity: 1;
-}
-.wordmark-fallback {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: clamp(23px, 7.4vw, 140px);
-  line-height: 1.04;
-  letter-spacing: -0.035em;
-  color: #e6e6e6;
-}
-.vector-wordmark[data-ready="true"][data-enabled="true"] .wordmark-fallback {
-  visibility: hidden;
-}
-.wordmark-desktop {
-  white-space: nowrap;
-}
-.wordmark-mobile {
-  display: none;
-}
-.wordmark-coordinate {
-  position: absolute;
-  white-space: nowrap;
-  left: 0;
-  top: 0;
-  font: 10px var(--font-mono);
-  color: #aaa;
-  opacity: 0.6;
-  pointer-events: none;
-}
-.vector-wordmark:not([data-ready="true"]) .wordmark-coordinate,
-.vector-wordmark[data-enabled="false"] .wordmark-coordinate {
-  display: none;
-}
-.hero-content .hero-bottom {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 9%;
-}
-.hero-content .role-line {
-  margin-bottom: 0;
-}
-.hero-content .hero-actions {
-  padding-top: 0;
-}
-@media (max-width: 767px) {
-  .hero-journey {
-    --stage-height: max(570px, calc(100svh - var(--header-height)));
-  }
-  .hero-journey[data-animated="true"] {
-    height: calc(var(--stage-height) * 1.5);
-  }
-  .hero-wordmark {
-    inset: 5% 3% 32%;
-  }
-  .wordmark-desktop {
-    display: none;
-  }
-  .wordmark-mobile {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  .wordmark-fallback {
-    font-size: 15vw;
-  }
-  .hero-content .hero-bottom {
-    bottom: 9%;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 24px;
-  }
-  .hero-content .hero-actions {
-    width: 100%;
-  }
-  .hero-content .hero-actions .button {
-    flex: 1;
-  }
-  .wordmark-coordinate {
-    font-size: 10px;
-  }
 }
 
 /* One anchor offset policy shared by native scrolling, Lenis, and history. */

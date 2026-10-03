@@ -89,6 +89,9 @@ export interface Technology {
 const projectPreviewSizes =
   "(max-width: 767px) calc(100vw - 64px), (max-width: 1199px) 50vw, 620px";
 
+// Supplied reference value, not a live analytics count. Replace it here when available.
+export const profileViews = { displayValue: "124K" };
+
 export const socialLinks: SocialLink[] = [
   {
     label: "Resume",
