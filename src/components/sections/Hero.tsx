@@ -22,8 +22,8 @@ const wordmarkFont = {
   letterSpacing: "-0.035em",
 };
 const mobileLines = ["PULKIT", "SHARMA"];
-const handles = { size: 80, spread: 42, labels: true };
-const responsiveHandles = { size: 24, spread: 42, labels: false };
+const handles = { size: 60, spread: 42, labels: true };
+const responsiveHandles = { size: 36, spread: 42, labels: false };
 const heroSocialLinks = ["email", "github", "x", "linkedin", "resume"].map(
   (icon) => socialLinks.find((link) => link.icon === icon)!,
 );

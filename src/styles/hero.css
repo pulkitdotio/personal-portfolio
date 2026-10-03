@@ -226,7 +226,7 @@
   color: #999;
 }
 
-/* About enters the final fade; the sticky background reveals the shared particles. */
+/* Hero and About share the particle field throughout the scroll transition. */
 html.lenis {
   scroll-behavior: auto;
 }
@@ -247,7 +247,8 @@ html.lenis {
 .hero-backdrop {
   position: absolute;
   inset: 0;
-  background: var(--color-canvas);
+  /* The near-black canvas comes from the page; keep its stars visible here. */
+  background: transparent;
   pointer-events: none;
 }
 .hero-backdrop::after {
@@ -714,9 +715,6 @@ html.lenis {
     position: relative;
     top: auto;
     height: auto;
-  }
-  .hero-backdrop {
-    mask-image: linear-gradient(#000 75%, transparent 100%);
   }
   .hero-content {
     display: grid;
