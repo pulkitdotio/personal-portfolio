@@ -1,6 +1,5 @@
 import { expect, test } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
-import { mkdir } from "node:fs/promises";
 import {
   closeNavigation,
   openNavigation,
@@ -9,36 +8,57 @@ import {
 
 const viewports = [
   { width: 320, height: 700 },
+  { width: 360, height: 800 },
   { width: 375, height: 812 },
   { width: 390, height: 844 },
+  { width: 412, height: 915 },
   { width: 430, height: 932 },
   { width: 768, height: 1024 },
+  { width: 1024, height: 768 },
 ];
 
 for (const viewport of viewports) {
-  test(`stacked hero fits and flows into About at ${viewport.width}x${viewport.height}`, async ({
+  test(`responsive hero composition and navigation at ${viewport.width}x${viewport.height}`, async ({
     page,
   }) => {
+    const phone = viewport.width < 700;
     await page.setViewportSize(viewport);
     await page.goto("/");
     await page.evaluate(() => document.fonts.ready);
     const mark = page.locator(".vector-wordmark");
     await expect(mark).toHaveAttribute("data-ready", "true");
-    await expect(mark).toHaveAttribute(
-      "data-lines",
-      viewport.width < 768 ? "2" : "1",
-    );
+    await expect(mark).toHaveAttribute("data-lines", phone ? "2" : "1");
     const profile = page.locator("#profile");
     await expect(profile).toHaveAttribute("data-animated", "false");
     await expect(page.locator(".hero-stage")).toHaveCSS("position", "relative");
     expect((await page.locator("header").boundingBox())!.height).toBe(
-      viewport.width < 768 ? 60 : 64,
+      phone ? 64 : 68,
     );
+    const dimensions = await page.evaluate(() => ({
+      scroll: document.documentElement.scrollWidth,
+      client: document.documentElement.clientWidth,
+    }));
+    expect(dimensions.scroll).toBe(dimensions.client);
+    // Check geometry even with the existing global clipping removed.
+    await page.addStyleTag({
+      content: "#root { overflow: visible !important }",
+    });
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth),
-    ).toBe(viewport.width);
+    ).toBe(dimensions.client);
+    await expect(page.locator(".hero-architecture")).toBeHidden();
+    await expect(page.locator(".header-geometry")).toBeHidden();
+    for (const selector of [
+      ".hero-plane",
+      ".hero-diagonal",
+      ".hero-cross-rule",
+    ]) {
+      for (const decoration of await page.locator(selector).all()) {
+        await expect(decoration).toBeHidden();
+      }
+    }
 
-    const sequence = [
+    const blocks = [
       ".hero-wordmark",
       ".hero-tagline",
       ".hero-statement",
@@ -48,14 +68,21 @@ for (const viewport of viewports) {
       ".hero-scroll",
     ];
     let previousBottom = 0;
-    for (const selector of sequence) {
+    const gutter = await page
+      .locator(".hero-content")
+      .evaluate((el) => parseFloat(getComputedStyle(el).paddingLeft));
+    for (const selector of blocks) {
       const box = (await page.locator(selector).boundingBox())!;
-      expect(box.x).toBeGreaterThanOrEqual(0);
-      expect(box.x + box.width).toBeLessThanOrEqual(viewport.width);
-      expect(box.y).toBeGreaterThanOrEqual(previousBottom);
+      expect(box.x).toBeGreaterThanOrEqual(gutter - 1);
+      expect(box.x + box.width).toBeLessThanOrEqual(
+        viewport.width - gutter + 1,
+      );
+      if (phone || selector !== ".hero-statement")
+        expect(box.y).toBeGreaterThanOrEqual(previousBottom - 1);
       previousBottom = box.y + box.height;
     }
-    // Check actual text fragments, rather than just their containing blocks.
+    const markBox = (await mark.boundingBox())!;
+    expect(markBox.x + markBox.width / 2).toBeCloseTo(viewport.width / 2, 0);
     const clipped = await page
       .locator(
         ".hero-tagline, .hero-statement, .hero-text-links a, .hero-social-label",
@@ -75,46 +102,47 @@ for (const viewport of viewports) {
       );
     expect(clipped).toEqual([]);
 
-    const edge = (await page
-      .locator(".hero-architecture .hero-diagonal")
-      .boundingBox())!;
-    for (const selector of [
-      ".hero-wordmark",
-      ".hero-tagline",
-      ".hero-statement",
-      ".hero-availability",
-      ".hero-text-links",
-      ".hero-socials",
-    ]) {
-      const box = (await page.locator(selector).boundingBox())!;
-      if (edge.y < box.y + box.height && edge.y + edge.height > box.y)
-        expect(edge.x).toBeGreaterThan(box.x + box.width);
-    }
     const socials = page.locator(".hero-socials a");
-    const rows = new Set<number>();
+    await expect(socials).toHaveCount(5);
+    const boxes = [];
     for (const link of await socials.all()) {
       const box = (await link.boundingBox())!;
+      boxes.push(box);
       expect(box.width).toBeGreaterThanOrEqual(44);
       expect(box.height).toBeGreaterThanOrEqual(44);
       await expect(link.locator(".hero-social-icon")).toBeVisible();
-      rows.add(Math.round(box.y));
     }
-    expect(rows.size).toBe(viewport.width < 360 ? 3 : 2);
+    expect(new Set(boxes.map((box) => Math.round(box.y))).size).toBe(
+      phone ? 2 : 1,
+    );
+    if (phone) {
+      expect(boxes[3].width).toBeCloseTo(boxes[0].width, 0);
+      expect(boxes[4].x + boxes[4].width - viewport.width / 2).toBeCloseTo(
+        viewport.width / 2 - boxes[3].x,
+        0,
+      );
+    }
+    await expect(
+      page.getByRole("link", { name: "View Projects", exact: true }),
+    ).toHaveAttribute("href", "#projects");
+    await expect(
+      page.getByRole("link", { name: "About Me", exact: true }),
+    ).toHaveAttribute("href", "#about");
+    await expect(page.locator(".hero-scroll")).toBeVisible();
     const heroBox = (await profile.boundingBox())!;
     const aboutBox = (await page.locator("#about").boundingBox())!;
     expect(aboutBox.y).toBeCloseTo(heroBox.y + heroBox.height, 0);
+    expect(aboutBox.x).toBeCloseTo(gutter, 0);
     expect(heroBox.height).toBe(
       (await page.locator(".hero-content").boundingBox())!.height,
     );
-    expect(aboutBox.y - previousBottom).toBeLessThan(24);
+    expect(aboutBox.y - previousBottom).toBeLessThan(28);
+    const aboutPadding = await page
+      .locator("#about")
+      .evaluate((el) => parseFloat(getComputedStyle(el).paddingTop));
+    expect(aboutPadding).toBeGreaterThanOrEqual(24);
+    expect(aboutPadding).toBeLessThanOrEqual(48);
 
-    if (viewport.width === 390 || viewport.width === 768) {
-      await mkdir(".cache/screenshots/responsive", { recursive: true });
-      await page.mouse.move(viewport.width - 1, 0);
-      await page.screenshot({
-        path: `.cache/screenshots/responsive/hero-${viewport.width}x${viewport.height}.png`,
-      });
-    }
     await page.evaluate(
       (y) => window.scrollTo({ top: y, behavior: "instant" }),
       heroBox.y + heroBox.height - viewport.height * 0.6,
@@ -124,6 +152,10 @@ for (const viewport of viewports) {
       "inert",
       false,
     );
+    expect(
+      (await page.locator("header").boundingBox())!.y +
+        (await page.locator("header").boundingBox())!.height,
+    ).toBeLessThanOrEqual(0);
     await expect
       .poll(async () => {
         const title = (await page.locator("#about-title").boundingBox())!;
@@ -134,24 +166,18 @@ for (const viewport of viewports) {
       "transform",
       "none",
     );
-    if (viewport.width === 390 || viewport.width === 768) {
-      await expect(page.locator(".about-identity")).toHaveCSS("opacity", "1");
-      await expect(page.locator(".about-copy > div").first()).toHaveCSS(
-        "opacity",
-        "1",
-      );
-      await expect(page.locator(".section-rule").first()).toHaveCSS(
-        "transform",
-        "none",
-      );
-      await page.screenshot({
-        path: `.cache/screenshots/responsive/about-entry-${viewport.width}.png`,
-      });
-    }
 
     const position = () =>
       page.locator("#about").evaluate((el) => el.getBoundingClientRect().top);
     const before = await position();
+    const menu = await openNavigation(page);
+    await expect(menu.getByRole("link").first()).toBeFocused();
+    await expect(
+      page.getByRole("button", { name: "Close navigation menu", exact: true }),
+    ).toBeInViewport();
+    await expect(page.locator("body")).toHaveCSS("overflow", "hidden");
+    await closeNavigation(page);
+    await expect.poll(position).toBeCloseTo(before, 0);
     await toggleAnimations(page, "Pause");
     await expect.poll(position).toBeCloseTo(before, 0);
     await toggleAnimations(page, "Resume");
@@ -161,10 +187,14 @@ for (const viewport of viewports) {
     await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
     await expect(mark.locator(".wordmark-fallback")).toBeVisible();
     const fallback = (await mark
-      .locator(viewport.width < 768 ? ".wordmark-mobile" : ".wordmark-desktop")
+      .locator(phone ? ".wordmark-mobile" : ".wordmark-desktop")
       .boundingBox())!;
-    expect(fallback.x).toBeGreaterThanOrEqual(0);
-    expect(fallback.x + fallback.width).toBeLessThanOrEqual(viewport.width);
+    expect(fallback.x).toBeGreaterThanOrEqual(gutter);
+    expect(fallback.x + fallback.width).toBeLessThanOrEqual(
+      viewport.width - gutter,
+    );
+    expect(fallback.width / markBox.width).toBeGreaterThan(0.68);
+    expect(fallback.width / markBox.width).toBeLessThan(0.83);
     const audit = await new AxeBuilder({ page })
       .include("header")
       .include("#profile")
@@ -178,6 +208,26 @@ for (const viewport of viewports) {
     ).toEqual([]);
   });
 }
+
+test("wordmark and CSS use the same mode at the phone/tablet boundary", async ({
+  page,
+}) => {
+  await page.goto("/");
+  for (const width of [699, 700, 1199, 1200]) {
+    await page.setViewportSize({ width, height: 900 });
+    await expect(page.locator(".vector-wordmark")).toHaveAttribute(
+      "data-lines",
+      width < 700 ? "2" : "1",
+    );
+    await expect(page.locator("#profile")).toHaveAttribute(
+      "data-animated",
+      width < 1200 ? "false" : "true",
+    );
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth),
+    ).toBe(width);
+  }
+});
 
 test("phone keyboard order follows the visual hierarchy", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
@@ -206,12 +256,33 @@ test("touch wordmark responds, the narrow menu scrolls, and its actions remain r
   await page.goto("/");
   const mark = page.locator(".vector-wordmark");
   await expect(mark).toHaveAttribute("data-running", "true");
-  const label = mark.locator(".wordmark-coordinate").first();
-  const before = await label.getAttribute("style");
+  await expect(mark).toHaveAttribute("data-ready", "true");
+  const pointer = () =>
+    mark.locator("canvas").evaluate((el) => {
+      const gl = (el as HTMLCanvasElement).getContext("webgl")!;
+      const program = gl.getParameter(gl.CURRENT_PROGRAM) as WebGLProgram;
+      const value = gl.getUniform(
+        program,
+        gl.getUniformLocation(program, "uPtr"),
+      );
+      return { x: Number(value[0]), y: Number(value[1]) };
+    });
   const box = (await mark.boundingBox())!;
-  await page.touchscreen.tap(box.x + box.width * 0.8, box.y + box.height * 0.7);
-  await expect.poll(() => label.getAttribute("style")).not.toBe(before);
   const client = await context.newCDPSession(page);
+  await client.send("Input.dispatchTouchEvent", {
+    type: "touchStart",
+    touchPoints: [{ x: box.x + box.width * 0.8, y: box.y + box.height * 0.7 }],
+  });
+  // Read the live shader input: WebGL's default drawing buffer need not retain
+  // pixels between frames, so toDataURL cannot reliably verify touch response.
+  await expect.poll(pointer).toEqual({
+    x: expect.closeTo(0.8, 1),
+    y: expect.closeTo(0.3, 1),
+  });
+  await client.send("Input.dispatchTouchEvent", {
+    type: "touchEnd",
+    touchPoints: [],
+  });
   // A real native pan verifies the touch rig never captures vertical scrolling.
   await client.send("Input.dispatchTouchEvent", {
     type: "touchStart",

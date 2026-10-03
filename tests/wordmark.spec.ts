@@ -229,5 +229,5 @@ test("anchors land below the header, history works, and the mobile menu locks wh
         .locator("#projects")
         .evaluate((el) => Math.round(el.getBoundingClientRect().top)),
     )
-    .toBe(88);
+    .toBe(92);
 });

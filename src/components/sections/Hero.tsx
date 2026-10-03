@@ -23,6 +23,7 @@ const wordmarkFont = {
 };
 const mobileLines = ["PULKIT", "SHARMA"];
 const handles = { size: 80, spread: 42, labels: true };
+const responsiveHandles = { size: 24, spread: 42, labels: false };
 const heroSocialLinks = ["email", "github", "x", "linkedin", "resume"].map(
   (icon) => socialLinks.find((link) => link.icon === icon)!,
 );
@@ -204,7 +205,7 @@ export function Hero() {
                 text="PULKIT SHARMA"
                 mobileLines={mobileLines}
                 font={wordmarkFont}
-                handles={handles}
+                handles={desktop ? handles : responsiveHandles}
                 enabled={enabled}
                 visible={pageVisible && (!scrollAnimated || !faded)}
               />

@@ -13,7 +13,16 @@ export async function openNavigation(page: Page) {
     // A real pointer click avoids Chromium scrolling a nested sticky header
     // when locator.click() first invokes scrollIntoViewIfNeeded().
     const box = (await button.boundingBox())!;
-    await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
+    if (box.y + box.height <= 0) {
+      // Responsive headers scroll with the page. Keyboard activation can open
+      // the fixed dialog without shifting the section under test.
+      await button.evaluate((el) =>
+        (el as HTMLButtonElement).focus({ preventScroll: true }),
+      );
+      await page.keyboard.press("Space");
+    } else {
+      await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
+    }
   }
   await expect(navigation).toBeVisible();
   return navigation;

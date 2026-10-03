@@ -473,7 +473,7 @@ export default function VectorWordmark({
       canvas.height = Math.round(height * dpr);
       const L = live.current;
       const lines =
-        window.innerWidth < 768 && L.mobileLines ? L.mobileLines : [L.text];
+        window.innerWidth < 700 && L.mobileLines ? L.mobileLines : [L.text];
       const atlas = buildAtlas(lines, L.font, width, height, dpr);
       if (!atlas) return;
       atlasWidth = atlas.width;
