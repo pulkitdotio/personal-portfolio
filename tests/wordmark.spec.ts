@@ -150,6 +150,31 @@ test("changing motion preferences preserves downstream position", async ({
   await expect.poll(top).toBeCloseTo(before, 0);
 });
 
+test("pausing and resuming preserves About during the overlapping hero transition", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const travel = await page
+    .locator(".hero-journey")
+    .evaluate(
+      (el) => el.getBoundingClientRect().bottom + scrollY - innerHeight,
+    );
+  await page.evaluate(
+    (y) => window.scrollTo({ top: y, behavior: "instant" }),
+    travel,
+  );
+  await expect(page.locator(".hero-content")).toHaveJSProperty("inert", true);
+  const top = () =>
+    page.locator("#about").evaluate((el) => el.getBoundingClientRect().top);
+  const before = await top();
+  await toggleAnimations(page, "Pause");
+  await expect.poll(top).toBeCloseTo(before, 0);
+  await toggleAnimations(page, "Resume");
+  await expect.poll(top).toBeCloseTo(before, 0);
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect.poll(top).toBeCloseTo(before, 0);
+});
+
 test("anchors land below the header, history works, and the mobile menu locks wheel scrolling", async ({
   page,
 }) => {
@@ -165,7 +190,7 @@ test("anchors land below the header, history works, and the mobile menu locks wh
         .locator("#about")
         .evaluate((el) => Math.round(el.getBoundingClientRect().top)),
     )
-    .toBe(128);
+    .toBe(104);
   await openNavigation(page);
   await page
     .getByRole("navigation", { name: "Primary navigation" })
@@ -177,7 +202,7 @@ test("anchors land below the header, history works, and the mobile menu locks wh
         .locator("#projects")
         .evaluate((el) => Math.round(el.getBoundingClientRect().top)),
     )
-    .toBe(128);
+    .toBe(104);
   await page.goBack();
   await expect(page).toHaveURL(/#about$/);
   await expect
@@ -186,7 +211,7 @@ test("anchors land below the header, history works, and the mobile menu locks wh
         .locator("#about")
         .evaluate((el) => Math.round(el.getBoundingClientRect().top)),
     )
-    .toBe(128);
+    .toBe(104);
   await page.setViewportSize({ width: 390, height: 844 });
   await page.getByRole("button", { name: "Open navigation menu" }).click();
   const before = await page.evaluate(() => scrollY);

@@ -8,7 +8,11 @@ import {
 import ArrowDown from "lucide-react/dist/esm/icons/arrow-down.mjs";
 import ArrowRight from "lucide-react/dist/esm/icons/arrow-right.mjs";
 import ArrowUpRight from "lucide-react/dist/esm/icons/arrow-up-right.mjs";
+import Mail from "lucide-react/dist/esm/icons/mail.mjs";
+import FileText from "lucide-react/dist/esm/icons/file-text.mjs";
+import xSvg from "simple-icons/icons/x.svg?raw";
 import { socialLinks } from "../../data/portfolio";
+import { githubIconPath } from "../../data/simpleIconPaths";
 import { useMotionPreferences } from "../motion/MotionPreferences";
 import VectorWordmark from "../motion/VectorWordmark";
 
@@ -22,6 +26,30 @@ const handles = { size: 80, spread: 42, labels: true };
 const heroSocialLinks = ["email", "github", "x", "linkedin", "resume"].map(
   (icon) => socialLinks.find((link) => link.icon === icon)!,
 );
+const xIconPath = xSvg.match(/<path d="([^"]+)"/)?.[1];
+
+function SocialIcon({ icon }: { icon: (typeof socialLinks)[number]["icon"] }) {
+  if (icon === "email")
+    return <Mail className="hero-social-icon" aria-hidden="true" />;
+  if (icon === "resume")
+    return <FileText className="hero-social-icon" aria-hidden="true" />;
+  return (
+    <svg className="hero-social-icon" viewBox="0 0 24 24" aria-hidden="true">
+      <path
+        d={
+          icon === "linkedin"
+            ? // Same LinkedIn silhouette as Connect, with transparent letter cutouts.
+              "M3 1h18a2 2 0 0 1 2 2v18a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2M5 9h3v10H5zm1.5-4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M10 9h3v1.4c.7-1.1 1.7-1.7 3-1.7 2.6 0 3.5 1.6 3.5 4.2V19h-3v-5.3c0-1.4-.3-2.3-1.6-2.3-1.4 0-1.9 1-1.9 2.4V19h-3z"
+            : icon === "github"
+              ? githubIconPath
+              : xIconPath
+        }
+        fill="currentColor"
+        fillRule="evenodd"
+      />
+    </svg>
+  );
+}
 
 export function Hero() {
   const { enabled, pageVisible } = useMotionPreferences();
@@ -39,8 +67,17 @@ export function Hero() {
     [1, 1, 0, 0],
   );
   const y = useTransform(scrollYProgress, [0, 0.78], [0, -24]);
+  const backdropOpacity = useTransform(
+    scrollYProgress,
+    [0, 0.12, 0.9, 1],
+    [1, 1, 0, 0],
+  );
 
   useMotionValueEvent(opacity, "change", (value) => {
+    document.documentElement.style.setProperty(
+      "--hero-presence",
+      String(enabled ? value : 1),
+    );
     if (!content.current) return;
     const hidden = enabled && value < 0.04;
     setFaded(hidden);
@@ -57,9 +94,17 @@ export function Hero() {
   useLayoutEffect(() => {
     const capture = () => {
       const header = document.querySelector("header")?.offsetHeight || 80;
+      // About can be visible while the overlapping sticky journey is still active.
+      const about = document.querySelector<HTMLElement>("#about");
+      const aboutInView =
+        about && about.getBoundingClientRect().top < innerHeight * 0.8;
       const element = Array.from(
         document.querySelectorAll<HTMLElement>("main > section"),
-      ).find((section) => section.getBoundingClientRect().bottom > header);
+      ).find(
+        (section) =>
+          (section !== journey.current || !aboutInView) &&
+          section.getBoundingClientRect().bottom > header,
+      );
       if (element)
         position.current = {
           element,
@@ -75,6 +120,10 @@ export function Hero() {
     const element = journey.current;
     if (!element) return;
     element.dataset.animated = String(enabled);
+    document.documentElement.style.setProperty(
+      "--hero-presence",
+      String(enabled ? opacity.get() : 1),
+    );
     // Capture before React commits: changing MotionConfig also changes reveals
     // and browser scroll anchoring can run before this layout effect.
     const saved = position.current;
@@ -93,7 +142,10 @@ export function Hero() {
       content.current.style.visibility = "visible";
     }
     window.dispatchEvent(new Event("portfolio-layout-change"));
-  }, [enabled]);
+    return () => {
+      document.documentElement.style.removeProperty("--hero-presence");
+    };
+  }, [enabled, opacity]);
 
   return (
     <section
@@ -104,6 +156,24 @@ export function Hero() {
     >
       <div className="hero-stage">
         <motion.div
+          className="hero-backdrop"
+          aria-hidden="true"
+          style={{ opacity: enabled ? backdropOpacity : 1 }}
+        />
+        <motion.div
+          className="hero-architecture"
+          aria-hidden="true"
+          style={{ opacity: enabled ? opacity : 1 }}
+        >
+          <div className="hero-geometry">
+            <div className="hero-plane-back" />
+            <div className="hero-plane-lower" />
+            <div className="hero-plane" />
+            <div className="hero-cross-rule" />
+            <div className="hero-diagonal" />
+          </div>
+        </motion.div>
+        <motion.div
           ref={content}
           className="hero-content"
           style={{ opacity: enabled ? opacity : 1, y: enabled ? y : 0 }}
@@ -111,12 +181,6 @@ export function Hero() {
           <h1 id="hero-title" className="sr-only">
             Pulkit Sharma
           </h1>
-          <div className="hero-architecture" aria-hidden="true">
-            <div className="hero-plane" />
-            <div className="hero-plane-lower" />
-            <div className="hero-cross-rule" />
-            <div className="hero-diagonal" />
-          </div>
           <div className="hero-identity">
             <div className="hero-wordmark">
               <VectorWordmark
@@ -142,8 +206,11 @@ export function Hero() {
                       target={link.external ? "_blank" : undefined}
                       rel={link.external ? "noreferrer noopener" : undefined}
                     >
-                      {link.icon === "resume" ? "Résumé" : link.label}
-                      <ArrowUpRight aria-hidden="true" />
+                      <SocialIcon icon={link.icon} />
+                      <span className="hero-social-label">
+                        {link.icon === "resume" ? "Résumé" : link.label}
+                        <ArrowUpRight aria-hidden="true" />
+                      </span>
                     </a>
                   </li>
                 ))}

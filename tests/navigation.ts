@@ -24,6 +24,7 @@ export async function closeNavigation(page: Page) {
   await expect(
     page.getByRole("dialog", { name: "Navigation menu" }),
   ).toHaveCount(0);
+  await expect(page.locator(".navigation-menu-shell")).toHaveCount(0);
 }
 
 export async function toggleAnimations(page: Page, action: "Pause" | "Resume") {

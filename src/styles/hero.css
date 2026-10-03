@@ -1,6 +1,41 @@
 /* Header and hero share the reference's viewport-wide editorial proportions. */
 :root {
-  --header-height: 100px;
+  --header-height: 76px;
+  --hero-stage-height: max(620px, calc(100svh - var(--header-height)));
+  --hero-composition-height: calc(
+    var(--header-height) + var(--hero-stage-height)
+  );
+  /* Both clipped windows use this same full-composition line, never two slopes. */
+  --hero-axis-top: 68.2vw;
+  --hero-axis-run: 21vw;
+  --hero-axis-length: hypot(
+    var(--hero-axis-run),
+    var(--hero-composition-height)
+  );
+  --hero-axis-angle: atan2(
+    var(--hero-axis-run),
+    var(--hero-composition-height)
+  );
+  /* Wedge corners sit ON the axis at 46.4% and 67.8% of its height. */
+  --hero-wedge-top-x: calc(var(--hero-axis-top) - var(--hero-axis-run) * 0.464);
+  --hero-wedge-bottom-x: calc(
+    var(--hero-axis-top) - var(--hero-axis-run) * 0.678
+  );
+  --hero-cross-end: 81.6vw;
+  --hero-cross-run: calc(var(--hero-cross-end) - var(--hero-wedge-bottom-x));
+  --hero-cross-height: calc(var(--hero-composition-height) * 0.322);
+  --hero-front-right: calc(
+    var(--hero-wedge-bottom-x) + var(--hero-cross-run) * 0.18952
+  );
+  --hero-front-bottom: calc(67.8% + 32.2% * 0.18952);
+  --hero-back-right: calc(
+    var(--hero-wedge-bottom-x) + var(--hero-cross-run) * 0.39214
+  );
+  --hero-back-bottom: calc(67.8% + 32.2% * 0.39214);
+  --hero-slab-left: calc(
+    var(--hero-wedge-bottom-x) + var(--hero-cross-run) * 0.460884
+  );
+  --hero-slab-top: calc(67.8% + 32.2% * 0.460884);
   --hero-rule: #c9c9c938;
   --font-editorial: "Baskerville", "Times New Roman", serif;
 }
@@ -9,18 +44,15 @@
   top: 0;
   z-index: 50;
   height: var(--header-height);
-  background: #0b0b0a;
-  border-bottom: 1px solid var(--hero-rule);
+  background: var(--color-canvas);
+  border-bottom: 1px solid #c9c9c926;
 }
-.site-header::after {
-  content: "";
+.header-geometry {
   position: absolute;
-  top: 0;
-  left: 65.98%;
-  width: 2.22%;
-  height: 100%;
-  background: #e6e6e6;
-  clip-path: polygon(calc(100% - 1px) 0, 100% 0, 1px 100%, 0 100%);
+  inset: 0;
+  bottom: -1px;
+  overflow: hidden;
+  opacity: var(--hero-presence, 1);
   pointer-events: none;
 }
 .navigation-dialog {
@@ -39,15 +71,15 @@
 .brand-link {
   display: inline-flex;
   align-items: center;
-  gap: 15px;
+  gap: 13px;
   min-height: 44px;
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 580;
   letter-spacing: -1.1px;
 }
 .brand-link img {
-  width: 28px;
-  height: 32px;
+  width: 25px;
+  height: 29px;
   object-fit: contain;
   mix-blend-mode: screen;
 }
@@ -62,25 +94,25 @@
 .profile-views {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 21px;
   white-space: nowrap;
 }
 .profile-views-value {
-  font: 32px/1 var(--font-editorial);
+  font: 30px/1 var(--font-editorial);
   color: #efefed;
 }
 .profile-views-label {
   border-left: 1px solid var(--hero-rule);
-  padding: 8px 0 8px 24px;
-  font-size: 15px;
+  padding: 6px 0 6px 21px;
+  font-size: 14px;
   color: #bebebc;
 }
 .menu-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 52px;
-  width: 52px;
+  height: 46px;
+  width: 46px;
   flex-shrink: 0;
   border: 1px solid #c9c9c955;
   border-radius: 50%;
@@ -95,8 +127,8 @@
   border-color: #c9c9c999;
 }
 .menu-button svg {
-  width: 23px;
-  height: 23px;
+  width: 21px;
+  height: 21px;
   stroke-width: 1;
 }
 .reading-progress {
@@ -196,26 +228,31 @@
   color: #999;
 }
 
-/* Keep the existing sticky fade timeline and the wordmark's canvas lifecycle. */
+/* About enters the final fade; the sticky background reveals the shared particles. */
 html.lenis {
   scroll-behavior: auto;
 }
 .hero-journey {
-  --stage-height: max(620px, calc(100svh - var(--header-height)));
   position: relative;
-  height: var(--stage-height);
+  height: var(--hero-stage-height);
   overflow-anchor: none;
 }
 .hero-journey[data-animated="true"] {
-  height: calc(var(--stage-height) * 2);
+  height: calc(var(--hero-stage-height) * 1.45);
 }
 .hero-stage {
   position: sticky;
   top: var(--header-height);
-  height: var(--stage-height);
-  background: #0b0b0a;
+  height: var(--hero-stage-height);
+  isolation: isolate;
 }
-.hero-stage::after {
+.hero-backdrop {
+  position: absolute;
+  inset: 0;
+  background: var(--color-canvas);
+  pointer-events: none;
+}
+.hero-backdrop::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -228,54 +265,103 @@ html.lenis {
 .hero-content {
   position: relative;
   height: 100%;
-  isolation: isolate;
 }
 .hero-architecture {
   position: absolute;
   inset: 0;
-  z-index: -1;
+  overflow: hidden;
   pointer-events: none;
+}
+.hero-geometry {
+  position: absolute;
+  top: calc(var(--header-height) * -1);
+  left: 0;
+  width: 100%;
+  height: var(--hero-composition-height);
 }
 .hero-diagonal,
 .hero-plane,
+.hero-plane-back,
 .hero-plane-lower,
 .hero-cross-rule {
   position: absolute;
   inset: 0;
 }
 .hero-diagonal {
-  background: #e6e6e6;
-  clip-path: polygon(65.98% 0, 66.06% 0, 47.28% 100%, 47.2% 100%);
+  top: 0;
+  bottom: auto;
+  left: var(--hero-axis-top);
+  right: auto;
+  width: 0;
+  height: var(--hero-axis-length);
+  border-left: 1px solid #e6e6e6;
+  transform-origin: 0 0;
+  transform: rotate(var(--hero-axis-angle));
 }
 .hero-plane {
-  clip-path: polygon(58.5% 40%, 81.6% 100%, 54% 64%);
+  clip-path: polygon(
+    var(--hero-wedge-top-x) 46.4%,
+    var(--hero-front-right) 47.3%,
+    var(--hero-front-right) var(--hero-front-bottom),
+    var(--hero-wedge-bottom-x) 67.8%
+  );
   background:
-    repeating-linear-gradient(
+    radial-gradient(ellipse at 58% 60%, #c2c2bc18, transparent 16%),
+    radial-gradient(circle, #e0e0d818 0.45px, transparent 0.9px),
+    radial-gradient(circle, #10101020 0.5px, transparent 1px),
+    linear-gradient(90deg, #72726e 54%, #656561 59.2%);
+  background-size:
+    auto,
+    3px 5px,
+    7px 9px,
+    auto;
+  background-position:
+    0 0,
+    0 0,
+    2px 3px,
+    0 0;
+  opacity: 0.86;
+}
+.hero-plane-back {
+  clip-path: polygon(
+    var(--hero-front-right) 47.3%,
+    var(--hero-back-right) 54%,
+    var(--hero-back-right) var(--hero-back-bottom),
+    var(--hero-front-right) var(--hero-front-bottom)
+  );
+  background:
+    linear-gradient(
       90deg,
-      transparent 0 5.8%,
-      #0005 5.8% 5.87%,
-      transparent 5.87% 8%
+      transparent calc(var(--hero-front-right) - 1px),
+      #bcbcb72b var(--hero-front-right),
+      transparent calc(var(--hero-front-right) + 1px)
     ),
-    repeating-linear-gradient(
-      113deg,
-      #eeeeee05 0 1px,
-      #00000009 1px 3px,
-      transparent 3px 5px
-    ),
-    linear-gradient(90deg, #8f8f8b 53%, #353533 60%, #111110 65%, #0b0b0a 77%);
-  opacity: 0.7;
+    repeating-linear-gradient(90deg, #0008 0 1px, transparent 1px 2.5%),
+    repeating-linear-gradient(113deg, #cccccc03 0 1px, transparent 1px 4px),
+    linear-gradient(90deg, #1c1c1a 59.2%, #0c0c0c 66.7%);
 }
 .hero-plane-lower {
-  clip-path: polygon(66.7% 81%, 81.6% 100%, 66.7% 100%);
+  clip-path: polygon(
+    var(--hero-slab-left) var(--hero-slab-top),
+    var(--hero-cross-end) 100%,
+    var(--hero-slab-left) 100%
+  );
   background:
     repeating-linear-gradient(90deg, #0005 0 1px, transparent 1px 4.5%),
-    repeating-linear-gradient(113deg, #cccccc04 0 1px, transparent 1px 3px),
-    linear-gradient(90deg, #0b0b0a 65%, #292927 66.8%, #0b0b0a 81%);
-  opacity: 0.5;
+    repeating-linear-gradient(113deg, #cccccc04 0 1px, transparent 1px 4px),
+    linear-gradient(90deg, #262624 66.7%, #0a0a0a 81.6%);
+  opacity: 0.65;
 }
 .hero-cross-rule {
-  background: #d2d2d27d;
-  clip-path: polygon(54% 64%, 54.04% 63.9%, 81.7% 100%, 81.6% 100%);
+  left: var(--hero-wedge-bottom-x);
+  top: 67.8%;
+  right: auto;
+  bottom: auto;
+  width: hypot(var(--hero-cross-run), var(--hero-cross-height));
+  height: 0;
+  border-top: 1px solid #d2d2d27a;
+  transform-origin: 0 0;
+  transform: rotate(atan2(var(--hero-cross-height), var(--hero-cross-run)));
 }
 .hero-identity {
   position: absolute;
@@ -407,6 +493,14 @@ html.lenis {
   font: clamp(11px, 0.84vw, 16px) var(--font-mono);
   white-space: nowrap;
 }
+.hero-social-label {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(12px, 1.05vw, 22px);
+}
+.hero-socials .hero-social-icon {
+  display: none;
+}
 .hero-socials svg {
   width: 16px;
   height: 16px;
@@ -422,7 +516,7 @@ html.lenis {
 .hero-text-links a svg {
   transition: transform 0.25s var(--ease);
 }
-.hero-socials a:hover svg {
+.hero-socials a:hover .hero-social-label svg {
   transform: translate(2px, -2px);
 }
 .hero-editorial {
@@ -506,9 +600,73 @@ html.lenis {
   stroke-width: 1;
 }
 
+@media (min-width: 1200px) {
+  /* Preserve the reference's vertical composition as the header becomes slimmer. */
+  .hero-identity::before {
+    top: calc(var(--hero-composition-height) * 0.211 - var(--header-height));
+    bottom: calc(var(--hero-composition-height) * 0.326);
+  }
+  .hero-wordmark {
+    top: calc(var(--hero-composition-height) * 0.269 - var(--header-height));
+    height: calc(var(--hero-composition-height) * 0.286);
+  }
+  .hero-tagline {
+    top: calc(var(--hero-composition-height) * 0.525 - var(--header-height));
+  }
+  .hero-socials {
+    top: calc(var(--hero-composition-height) * 0.745 - var(--header-height));
+    padding-top: 24px;
+  }
+  .hero-socials ul {
+    grid-template-columns: repeat(5, 1fr);
+  }
+  .hero-socials li {
+    padding-left: clamp(14px, 1.5vw, 28px);
+    border-left-color: #c9c9c91e;
+  }
+  .hero-socials a {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 13px;
+    min-height: 76px;
+    color: #adada8;
+    transition: color 0.2s;
+  }
+  .hero-socials .hero-social-icon {
+    display: block;
+    width: 19px;
+    height: 19px;
+    opacity: 0.75;
+    stroke-width: 1.3;
+    transition:
+      opacity 0.2s,
+      transform 0.25s var(--ease);
+  }
+  .hero-socials a:hover {
+    color: #efefed;
+    text-decoration: none;
+  }
+  .hero-socials a:hover .hero-social-icon {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+  .hero-editorial {
+    top: calc(var(--hero-composition-height) * 0.211 - var(--header-height));
+    bottom: calc(var(--hero-composition-height) * 0.085);
+  }
+  .hero-scroll {
+    bottom: calc(var(--hero-composition-height) * 0.082);
+  }
+  .hero-journey[data-animated="true"] + .about-section {
+    position: relative;
+    margin-top: calc(var(--hero-stage-height) * -0.48);
+  }
+}
+
 @media (min-width: 768px) and (max-width: 1199px) {
   :root {
     --header-height: 84px;
+    --hero-stage-height: max(660px, calc(100svh - var(--header-height)));
   }
   .header-inner.container {
     margin-inline: 4%;
@@ -516,8 +674,8 @@ html.lenis {
   .brand-link {
     font-size: 24px;
   }
-  .hero-journey {
-    --stage-height: max(660px, calc(100svh - var(--header-height)));
+  .hero-journey[data-animated="true"] {
+    height: calc(var(--hero-stage-height) * 2);
   }
   .hero-identity {
     left: 4%;
@@ -596,8 +754,9 @@ html.lenis {
 @media (max-width: 767px) {
   :root {
     --header-height: 68px;
+    --hero-stage-height: max(755px, calc(100svh - var(--header-height)));
   }
-  .site-header::after {
+  .header-geometry {
     display: none;
   }
   .header-inner.container {
@@ -663,11 +822,8 @@ html.lenis {
     align-items: flex-start;
     gap: 14px;
   }
-  .hero-journey {
-    --stage-height: max(755px, calc(100svh - var(--header-height)));
-  }
   .hero-journey[data-animated="true"] {
-    height: calc(var(--stage-height) * 1.5);
+    height: calc(var(--hero-stage-height) * 1.5);
   }
   .hero-content {
     display: flex;
@@ -677,7 +833,17 @@ html.lenis {
   .hero-architecture {
     overflow: hidden;
   }
+  .hero-geometry {
+    top: 0;
+    height: 100%;
+  }
   .hero-diagonal {
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-left: 0;
+    transform: none;
+    background: #e6e6e6;
     clip-path: polygon(98% 0, 98.2% 0, 35.2% 100%, 35% 100%);
     opacity: 0.15;
   }
@@ -686,6 +852,7 @@ html.lenis {
     opacity: 0.1;
   }
   .hero-plane-lower,
+  .hero-plane-back,
   .hero-cross-rule {
     display: none;
   }
@@ -789,6 +956,11 @@ html.lenis {
     justify-content: space-between;
     min-height: 40px;
     font-size: 11px;
+    gap: 10px;
+  }
+  .hero-social-label {
+    width: 100%;
+    justify-content: space-between;
     gap: 10px;
   }
   .hero-socials svg {

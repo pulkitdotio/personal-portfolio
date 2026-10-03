@@ -126,6 +126,9 @@ export function Header() {
   };
   return (
     <header className="site-header">
+      <div className="header-geometry" aria-hidden="true">
+        <div className="hero-diagonal" />
+      </div>
       <div
         className="navigation-dialog"
         role={isMenuOpen ? "dialog" : undefined}

@@ -93,7 +93,7 @@ for (const [label, hash] of [
           .locator(hash)
           .evaluate((el) => Math.round(el.getBoundingClientRect().top)),
       )
-      .toBe(128);
+      .toBe(104);
   });
 }
 
@@ -175,3 +175,116 @@ test("keyboard menu and motion controls preserve the current section position", 
   await expect.poll(top).toBeCloseTo(before, 0);
   await expect(open).toBeFocused();
 });
+
+for (const scale of [1, 1.25]) {
+  test(`diagonal stays straight across the header at ${scale * 100}% scaling`, async ({
+    browser,
+  }) => {
+    const context = await browser.newContext({
+      viewport: {
+        width: Math.round(1672 / scale),
+        height: Math.round(941 / scale),
+      },
+      deviceScaleFactor: scale,
+    });
+    const page = await context.newPage();
+    await page.goto("/");
+    const header = await page.locator("header").boundingBox();
+    expect(header!.height).toBe(76);
+    const capture = await page.screenshot();
+    const samples = await page.evaluate(
+      async ({ png, headerHeight, scale }) => {
+        const image = new Image();
+        image.src = `data:image/png;base64,${png}`;
+        await image.decode();
+        const canvas = document.createElement("canvas");
+        canvas.width = image.width;
+        canvas.height = image.height;
+        const ctx = canvas.getContext("2d")!;
+        ctx.drawImage(image, 0, 0);
+        return [
+          16,
+          headerHeight - 12,
+          headerHeight - 1,
+          headerHeight,
+          headerHeight + 12,
+          headerHeight + 48,
+        ].map((y) => {
+          const row = Math.round(y * scale);
+          const pixels = ctx.getImageData(0, row, canvas.width, 1).data;
+          let sum = 0;
+          let weightedX = 0;
+          for (
+            let x = Math.floor(canvas.width * 0.6);
+            x < canvas.width * 0.72;
+            x++
+          ) {
+            const weight = Math.max(0, pixels[x * 4] - 100);
+            sum += weight;
+            weightedX += x * weight;
+          }
+          return { x: weightedX / sum / scale, y: row / scale, sum };
+        });
+      },
+      { png: capture.toString("base64"), headerHeight: header!.height, scale },
+    );
+    const first = samples[0];
+    const last = samples.at(-1)!;
+    const slope = (last.x - first.x) / (last.y - first.y);
+    for (const sample of samples) {
+      expect(sample.sum).toBeGreaterThan(0);
+      expect(
+        Math.abs(sample.x - (first.x + slope * (sample.y - first.y))),
+      ).toBeLessThan(1);
+    }
+    await context.close();
+  });
+}
+
+for (const viewport of [
+  { width: 1440, height: 1000 },
+  { width: 1672, height: 941 },
+]) {
+  test(`About enters before the desktop hero disappears at ${viewport.width}px`, async ({
+    page,
+  }) => {
+    await page.setViewportSize(viewport);
+    await page.goto("/");
+    const icons = page.locator(".hero-social-icon");
+    await expect(icons).toHaveCount(5);
+    for (const icon of await icons.all()) {
+      await expect(icon).toBeVisible();
+      expect((await icon.boundingBox())!.width).toBe(19);
+    }
+    const travel = await page
+      .locator(".hero-journey")
+      .evaluate(
+        (el) => el.getBoundingClientRect().bottom + scrollY - innerHeight,
+      );
+    await page.evaluate(
+      (y) => window.scrollTo({ top: y * 0.83, behavior: "instant" }),
+      travel,
+    );
+    await expect(page.locator(".hero-content")).toHaveJSProperty("inert", true);
+    await expect
+      .poll(async () => {
+        const title = (await page.locator("#about-title").boundingBox())!;
+        return title.y + title.height;
+      })
+      .toBeLessThan(viewport.height * 0.8);
+    await page.evaluate(
+      (y) => window.scrollTo({ top: y, behavior: "instant" }),
+      travel,
+    );
+    await expect(page.locator(".hero-backdrop")).toHaveCSS("opacity", "0");
+    await expect
+      .poll(async () => (await page.locator(".about-copy").boundingBox())!.y)
+      .toBeLessThan(viewport.height * 0.9);
+    await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
+    await expect(page.locator(".hero-content")).toHaveJSProperty(
+      "inert",
+      false,
+    );
+    await expect(page.locator(".hero-content")).toHaveCSS("opacity", "1");
+  });
+}
