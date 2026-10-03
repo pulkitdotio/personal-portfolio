@@ -290,8 +290,8 @@ function buildAtlas(
   );
   const px = Math.min(
     (width * 0.77) / (measureWidth / 100 + 0.24),
-    (height * 0.70) / (lines.length * 1.04),
-    ((Number.parseFloat(String(font.fontSize || 1000)) * 0.82) * width) / 1200,
+    (height * 0.7) / (lines.length * 1.04),
+    (Number.parseFloat(String(font.fontSize || 1000)) * 0.82 * width) / 1200,
   );
   const ratio = Math.min(dpr, MAX_TEX / Math.max(width, height));
   const fpx = px * ratio;
@@ -461,6 +461,7 @@ export default function VectorWordmark({
     const cells = Array.from({ length: HANDLES }, () => ({ x: -0.5, y: 0.5 }));
     const verts = cells.map((cell) => ({ ...cell }));
     const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
+    let touchRelease: ReturnType<typeof setTimeout> | undefined;
 
     function sync() {
       if (!dirty || !host || !canvas || !gl) return;
@@ -624,14 +625,28 @@ export default function VectorWordmark({
     };
     refresh.current = invalidate;
     const onMove = (event: PointerEvent) => {
-      if (!active() || !finePointer.matches) return;
+      if (!active() || (!finePointer.matches && event.pointerType !== "touch"))
+        return;
+      clearTimeout(touchRelease);
       const rect = host.getBoundingClientRect();
       target.x = (event.clientX - rect.left) / rect.width;
       target.y = 1 - (event.clientY - rect.top) / rect.height;
       hasPointer = true;
     };
-    const onLeave = () => {
+    const onLeave = (event: PointerEvent) => {
+      if (event.pointerType === "touch") return;
       hasPointer = false;
+    };
+    const onTouchEnd = (event: PointerEvent) => {
+      if (event.pointerType !== "touch") return;
+      clearTimeout(touchRelease);
+      // A tap briefly reveals the rig. Native vertical scrolling stays available;
+      // a cancelled scroll gesture immediately returns to the automatic sweep.
+      if (event.type === "pointercancel") hasPointer = false;
+      else
+        touchRelease = setTimeout(() => {
+          hasPointer = false;
+        }, 750);
     };
     const onLost = (event: Event) => {
       event.preventDefault();
@@ -648,6 +663,9 @@ export default function VectorWordmark({
     observer.observe(host);
     resizeObserver.observe(host);
     host.addEventListener("pointermove", onMove, { passive: true });
+    host.addEventListener("pointerdown", onMove, { passive: true });
+    host.addEventListener("pointerup", onTouchEnd, { passive: true });
+    host.addEventListener("pointercancel", onTouchEnd, { passive: true });
     host.addEventListener("pointerleave", onLeave);
     canvas.addEventListener("webglcontextlost", onLost);
     document.addEventListener("visibilitychange", gate);
@@ -662,7 +680,11 @@ export default function VectorWordmark({
       observer.disconnect();
       resizeObserver.disconnect();
       host.removeEventListener("pointermove", onMove);
+      host.removeEventListener("pointerdown", onMove);
+      host.removeEventListener("pointerup", onTouchEnd);
+      host.removeEventListener("pointercancel", onTouchEnd);
       host.removeEventListener("pointerleave", onLeave);
+      clearTimeout(touchRelease);
       canvas.removeEventListener("webglcontextlost", onLost);
       document.removeEventListener("visibilitychange", gate);
       document.fonts.removeEventListener("loadingdone", invalidate);

@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
 import {
   motion,
   useMotionValueEvent,
@@ -28,6 +28,14 @@ const heroSocialLinks = ["email", "github", "x", "linkedin", "resume"].map(
 );
 const xIconPath = xSvg.match(/<path d="([^"]+)"/)?.[1];
 
+const desktopQuery = "(min-width: 1200px)";
+function subscribeDesktop(update: () => void) {
+  const query = window.matchMedia(desktopQuery);
+  query.addEventListener("change", update);
+  return () => query.removeEventListener("change", update);
+}
+const getDesktop = () => window.matchMedia(desktopQuery).matches;
+
 function SocialIcon({ icon }: { icon: (typeof socialLinks)[number]["icon"] }) {
   if (icon === "email")
     return <Mail className="hero-social-icon" aria-hidden="true" />;
@@ -53,6 +61,12 @@ function SocialIcon({ icon }: { icon: (typeof socialLinks)[number]["icon"] }) {
 
 export function Hero() {
   const { enabled, pageVisible } = useMotionPreferences();
+  const desktop = useSyncExternalStore(
+    subscribeDesktop,
+    getDesktop,
+    () => true,
+  );
+  const scrollAnimated = enabled && desktop;
   const journey = useRef<HTMLElement>(null);
   const content = useRef<HTMLDivElement>(null);
   const [faded, setFaded] = useState(false);
@@ -76,10 +90,10 @@ export function Hero() {
   useMotionValueEvent(opacity, "change", (value) => {
     document.documentElement.style.setProperty(
       "--hero-presence",
-      String(enabled ? value : 1),
+      String(scrollAnimated ? value : 1),
     );
     if (!content.current) return;
-    const hidden = enabled && value < 0.04;
+    const hidden = scrollAnimated && value < 0.04;
     setFaded(hidden);
     // Preserve keyboard access if a visitor is already using the hero actions.
     if (hidden && content.current.contains(document.activeElement)) {
@@ -119,17 +133,17 @@ export function Hero() {
   useLayoutEffect(() => {
     const element = journey.current;
     if (!element) return;
-    element.dataset.animated = String(enabled);
+    element.dataset.animated = String(scrollAnimated);
     document.documentElement.style.setProperty(
       "--hero-presence",
-      String(enabled ? opacity.get() : 1),
+      String(scrollAnimated ? opacity.get() : 1),
     );
     // Capture before React commits: changing MotionConfig also changes reveals
     // and browser scroll anchoring can run before this layout effect.
     const saved = position.current;
     if (saved) {
       const next =
-        saved.element === element
+        saved.element === element && desktop
           ? 0
           : window.scrollY +
             saved.element.getBoundingClientRect().top -
@@ -137,7 +151,7 @@ export function Hero() {
       window.scrollTo({ top: Math.max(0, next), behavior: "instant" });
       position.current = null;
     }
-    if (!enabled && content.current) {
+    if (!scrollAnimated && content.current) {
       content.current.inert = false;
       content.current.style.visibility = "visible";
     }
@@ -145,7 +159,7 @@ export function Hero() {
     return () => {
       document.documentElement.style.removeProperty("--hero-presence");
     };
-  }, [enabled, opacity]);
+  }, [desktop, enabled, scrollAnimated, opacity]);
 
   return (
     <section
@@ -158,12 +172,12 @@ export function Hero() {
         <motion.div
           className="hero-backdrop"
           aria-hidden="true"
-          style={{ opacity: enabled ? backdropOpacity : 1 }}
+          style={{ opacity: scrollAnimated ? backdropOpacity : 1 }}
         />
         <motion.div
           className="hero-architecture"
           aria-hidden="true"
-          style={{ opacity: enabled ? opacity : 1 }}
+          style={{ opacity: scrollAnimated ? opacity : 1 }}
         >
           <div className="hero-geometry">
             <div className="hero-plane-back" />
@@ -176,7 +190,10 @@ export function Hero() {
         <motion.div
           ref={content}
           className="hero-content"
-          style={{ opacity: enabled ? opacity : 1, y: enabled ? y : 0 }}
+          style={{
+            opacity: scrollAnimated ? opacity : 1,
+            y: scrollAnimated ? y : 0,
+          }}
         >
           <h1 id="hero-title" className="sr-only">
             Pulkit Sharma
@@ -189,7 +206,7 @@ export function Hero() {
                 font={wordmarkFont}
                 handles={handles}
                 enabled={enabled}
-                visible={pageVisible && !faded}
+                visible={pageVisible && (!scrollAnimated || !faded)}
               />
             </div>
             <p className="hero-tagline">
@@ -197,25 +214,6 @@ export function Hero() {
               <br />
               product, backend and AI.
             </p>
-            <nav className="hero-socials" aria-label="Social and contact links">
-              <ul>
-                {heroSocialLinks.map((link) => (
-                  <li key={link.icon}>
-                    <a
-                      href={link.href}
-                      target={link.external ? "_blank" : undefined}
-                      rel={link.external ? "noreferrer noopener" : undefined}
-                    >
-                      <SocialIcon icon={link.icon} />
-                      <span className="hero-social-label">
-                        {link.icon === "resume" ? "Résumé" : link.label}
-                        <ArrowUpRight aria-hidden="true" />
-                      </span>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </nav>
           </div>
           <div className="hero-editorial">
             <p className="hero-statement">
@@ -239,6 +237,25 @@ export function Hero() {
               </a>
             </nav>
           </div>
+          <nav className="hero-socials" aria-label="Social and contact links">
+            <ul>
+              {heroSocialLinks.map((link) => (
+                <li key={link.icon}>
+                  <a
+                    href={link.href}
+                    target={link.external ? "_blank" : undefined}
+                    rel={link.external ? "noreferrer noopener" : undefined}
+                  >
+                    <SocialIcon icon={link.icon} />
+                    <span className="hero-social-label">
+                      {link.icon === "resume" ? "Résumé" : link.label}
+                      <ArrowUpRight aria-hidden="true" />
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
           <a className="hero-scroll" href="#about">
             <span>Scroll to explore</span>
             <ArrowDown aria-hidden="true" />
