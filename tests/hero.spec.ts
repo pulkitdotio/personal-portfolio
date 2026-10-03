@@ -3,7 +3,7 @@ import AxeBuilder from "@axe-core/playwright";
 import { closeNavigation, openNavigation } from "./navigation";
 
 for (const width of [390, 768, 1440, 1920]) {
-  test(`hero destinations and profile views at ${width}px`, async ({
+  test(`hero destinations and minimal centered header at ${width}px`, async ({
     page,
   }) => {
     await page.setViewportSize({ width, height: width < 768 ? 844 : 1000 });
@@ -52,13 +52,18 @@ for (const width of [390, 768, 1440, 1920]) {
     await expect(
       hero.getByRole("link", { name: "Scroll to explore", exact: true }),
     ).toHaveAttribute("href", "#about");
-    if (width >= 768) {
-      await expect(page.locator(".header-profile-views")).toHaveText(
-        "124KProfile Views",
-      );
-      await expect(page.locator(".header-profile-views")).toBeVisible();
-    } else {
-      await expect(page.locator(".header-profile-views")).toBeHidden();
+    await expect(page.locator(".header-inner")).toHaveText("pulkit.");
+    await expect(page.locator(".header-profile-views")).toHaveCount(0);
+    await expect(page.locator(".header-controls > *")).toHaveCount(1);
+    const header = (await page.locator("header").boundingBox())!;
+    const brand = (await page.locator(".brand-link").boundingBox())!;
+    const menu = (await page.locator(".menu-button").boundingBox())!;
+    expect(menu.y + menu.height / 2).toBeCloseTo(brand.y + brand.height / 2, 1);
+    expect(
+      Math.abs(menu.y + menu.height / 2 - (header.y + header.height / 2)),
+    ).toBeLessThan(1);
+    expect(brand.x).toBeCloseTo(width - menu.x - menu.width, 0);
+    if (width < 768) {
       await openNavigation(page);
       await expect(page.locator(".menu-profile-views")).toHaveText(
         "124KProfile Views",

@@ -147,7 +147,6 @@ export function Header() {
             </span>
           </a>
           <div className="header-controls">
-            <ProfileViews className="header-profile-views" />
             <button
               ref={menuButtonRef}
               className="menu-button icon-button"

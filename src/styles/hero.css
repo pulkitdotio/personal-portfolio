@@ -61,8 +61,7 @@
 .header-inner.container {
   width: auto;
   max-width: none;
-  margin-left: 5.8%;
-  margin-right: 3%;
+  margin-inline: 5.8%;
   height: 100%;
   display: flex;
   align-items: center;
@@ -89,7 +88,6 @@
 .header-controls {
   display: flex;
   align-items: center;
-  gap: clamp(32px, 3.4vw, 64px);
 }
 .profile-views {
   display: flex;
@@ -683,9 +681,6 @@ html.lenis {
     width: 21px;
     height: 24px;
   }
-  .header-controls {
-    gap: 28px;
-  }
   .profile-views {
     gap: 14px;
   }
@@ -855,9 +850,6 @@ html.lenis {
   :root {
     --header-height: 60px;
     --hero-gutter: 24px;
-  }
-  .header-profile-views {
-    display: none;
   }
   .brand-link {
     font-size: 23px;
